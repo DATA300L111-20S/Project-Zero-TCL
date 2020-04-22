@@ -5,15 +5,35 @@
   <title>Tree Cover Loss in Brazil.</title>
   <meta charset="utf=8" />
   <link href="TCL.css" rel="stylesheets" />
-  <script src="d3.js"></script>
+  <script type="text/javascript" src="d3.js"></script>
+
   <script>
     window.onload = () => {
-      const = mapData = d3.json(public / data / brazil - states.geojson)
-      const =
+      const mapData = d3.json(public / data / brazil - states.geojson)
+
+      const symbolChart = [{
+          "Shifting Agriculture": 11.09
+        },
+        {
+          "Commodity Driven": 36.41
+        },
+        {
+          "Unknown": 0.26
+        },
+        {
+          "Forestry": 5.98
+        },
+        {
+          "Wildfire": 0.08
+        },
+        {
+          "Urbanization": 0.04
+        }
+      ]
+
 
 
     }
-
   </script>
 </head>
 
@@ -41,6 +61,4 @@
 
 
   </svg>
-</body>
-
-</html>
+</body></html>

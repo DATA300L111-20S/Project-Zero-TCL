@@ -11,6 +11,8 @@
     window.onload = () => {
       const mapData = d3.json(public / data / brazil - states.geojson)
 
+      const
+
       const symbolChart = [{
           "Shifting Agriculture": 11.09
         },
@@ -31,9 +33,46 @@
         }
       ]
 
+      const lineData = [{
+          "Year": "2001",
+          "TCL": 2.75,
+          "CO2": 0.91,
+        },
+        {
+          "Year": "2004",
+          "TCL": 3.85,
+          "CO2": 1.37,
+        },
+        {
+          "Year": "2007",
+          "TCL": 2.62,
+          "CO2": 0.88,
+        },
+        {
+          "Year": "2010",
+          "TCL": 2.69,
+          "CO2": 0.90,
+        },
+        {
+          "Year": "2013",
+          "TCL": 1.95,
+          "CO2": 0.59,
+        },
+        {
+          "Year": "2016",
+          "TCL": 5.38,
+          "CO2": 1.94,
+        },
+        {
+          "Year": "2018",
+          "TCL": 2.95,
+          "CO2": 1.02,
+        }
+      ]
 
 
     }
+
   </script>
 </head>
 
@@ -51,7 +90,7 @@
 
   <section>
     <h2>Tree Cover Loss by Driving Factor.</h2>
-    <!--Pro.Symboal Chart-->
+    <!--Pro.Symbol Chart-->
   </section>
 
   <section>
@@ -61,4 +100,6 @@
 
 
   </svg>
-</body></html>
+</body>
+
+</html>

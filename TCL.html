@@ -13,11 +13,8 @@
 
   <script>
     window.onload = () => {
-      const mapData = d3.json(public / data / brazil - states.geojson)
 
-      const
-
-      const symbolChart = [{
+      const symbolData = [{
           "Shifting Agriculture": 11.09
         },
         {
@@ -97,9 +94,50 @@
         }
       ]
 
+      const termtoInt = d => {
+        switch (d["Year"]) {
+          case "2001":
+            return 5;
+          case "2004":
+            return 10;
+          case "2007":
+            return 15;
+          case "2010":
+            return 20;
+          case "2013":
+            return 25;
+          case "2016":
+            return 30;
+          case "2018":
+            return 33;
+        }
+      }
+
+      const lineChart = d3.select("#line-chart")
+        .append("svg")
+        .attr("width", 400)
+        .attr("height", 270)
+        .attr("viewBox", "0 0 40 27");
+
+      const line1 = d3.line()
+        .x(termtoInt)
+        .y(d => (8 - d["TCL"]));
+
+      lineChart.append("path")
+        .datum(tclLineData)
+        .attr("class", "line")
+        .attr("d", line1);
+
+      const line2 = d3.line()
+        .x(termtoInt)
+        .y(d => 3 - d["CO2"]);
+
+      lineChart.append("path")
+        .datum(co2LineData)
+        .attr("class", "line")
+        .attr("d", line2)
 
     }
-
   </script>
 </head>
 
@@ -123,10 +161,7 @@
   <section>
     <h2>Tree Cover Loss per Year with Carbon Dioxide Emissions.</h2>
     <!--Line Chart-->
+    <figure id="line-chart"></figure>
   </section>
 
-
-  </svg>
-</body>
-
-</html>
+</body></html>

@@ -1,0 +1,16 @@
+svg {
+  background-color: white border: 1px;
+  padding: 1em;
+  display: inline-block;
+  vertical-align: top;
+}
+
+body {
+  background-color: white
+}
+
+path {
+  stroke: black;
+  fill: none;
+  stroke-width: 0.35;
+}

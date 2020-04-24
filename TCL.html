@@ -6,13 +6,59 @@
 <html lang="en">
 
 <head>
-  <title>Tree Cover Loss in Brazil.</title>
+  <title>Tree Cover Loss in Brazil: A Comprehensive Visualization.</title>
   <meta charset="utf=8" />
   <link href="TCL.css" rel="stylesheets" />
   <script type="text/javascript" src="d3.js"></script>
 
   <script>
     window.onload = () => {
+
+      const brazilMap = d3.select("#choropleth-map")
+        .append("svg")
+        .attr("width", 800)
+        .attr("height", 600);
+
+      var mapPath = d3.geoPath()
+        .projection(d3.geoAlbersUsa());
+
+      d3.json("brazil.geojson", function(json) {
+        svg.SelectAll("path")
+          .data(json.features)
+          .enter()
+          .append("path")
+          .attr("d", mapPath);
+      });
+
+      const symbol = d3.select("#symbol-chart")
+        .append("svg")
+        .attr("width", 900)
+        .attr("height", 450)
+        .attr("viewBox", "0 0 1200 300");
+
+      var rectangle = symbol.append("rect")
+        .attr("x", 1)
+        .attr("y", 10)
+        .attr("width", 364.1)
+        .attr("height", 364.1);
+
+      var rectangle = symbol.append("rect")
+        .attr("x", 400)
+        .attr("y", 100)
+        .attr("width", 110.9)
+        .attr("height", 110.9);
+
+      var rectangle = symbol.append("rect")
+        .attr("x", 600)
+        .attr("y", 150)
+        .attr("width", 59.8)
+        .attr("height", 59.8);
+
+      var rectangle = symbol.append("rect")
+        .attr("x", 800)
+        .attr("y", 150)
+        .attr("width", 3.8)
+        .attr("height", 3.8);
 
       const symbolData = [{
           "Shifting Agriculture": 11.09
@@ -21,16 +67,10 @@
           "Commodity Driven": 36.41
         },
         {
-          "Unknown": 0.26
+          "Others": 0.38
         },
         {
           "Forestry": 5.98
-        },
-        {
-          "Wildfire": 0.08
-        },
-        {
-          "Urbanization": 0.04
         }
       ]
 
@@ -146,6 +186,7 @@
   <section>
     <h2>Percentage of Tree Cover Loss per State in Brazil.</h2>
     <!--Choropleth Map-->
+    <figure id="choropleth-map"></figure>
   </section>
 
   <section>
@@ -155,7 +196,9 @@
 
   <section>
     <h2>Tree Cover Loss by Driving Factor.</h2>
+    <h3>The symbol's size represents the amount of Mha that driver has contributed to tree cover loss between 2001 and 2018.</h3>
     <!--Pro.Symbol Chart-->
+    <figure id="symbol-chart"></figure>
   </section>
 
   <section>

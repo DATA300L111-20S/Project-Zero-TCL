@@ -26,14 +26,14 @@
   var data = d3.map();
   var colorScale = d3.scaleThreshold()
     .domain([100000, 1000000, 10000000, 30000000, 100000000, 500000000])
-  //.range(d3.schemeBlues[7]);
+  //.range(d3.schemeGreens[7]);
 
   // Load external data and boot
   d3.queue()
     .defer(d3.json, "https://raw.githubusercontent.com/codeforamerica/click_that_hood/master/public/data/brazil-states.geojson")
-    //.defer(d3.csv, "../tcl.csv", function(d) {
-    //data.set(d.code, +d.pop);
-    //})
+    .defer(d3.csv, "https://raw.githubusercontent.com/DATA300L111-20S/Project-Zero-TCL/master/tcl", function(d) {
+      data.set(d.code, +d.pop);
+    })
     .await(ready);
 
   function ready(error, topo) {

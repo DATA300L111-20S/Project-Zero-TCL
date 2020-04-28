@@ -9,6 +9,10 @@ body {
   background-color: white
 }
 
+rectangle {
+  fill: pink;
+}
+
 path {
   stroke: black;
   fill: none;

@@ -14,22 +14,15 @@
   <script>
     window.onload = () => {
 
+      //Choropleth Map
       const brazilMap = d3.select("#choropleth-map")
         .append("svg")
         .attr("width", 800)
         .attr("height", 600);
 
-      var mapPath = d3.geoPath()
-        .projection(d3.geoAlbersUsa());
+      //Bar Chart
 
-      d3.json("brazil.geojson", function(json) {
-        svg.SelectAll("path")
-          .data(json.features)
-          .enter()
-          .append("path")
-          .attr("d", mapPath);
-      });
-
+      //Proportional Symbol Chart
       const symbol = d3.select("#symbol-chart")
         .append("svg")
         .attr("width", 900)
@@ -40,25 +33,29 @@
         .attr("x", 1)
         .attr("y", 10)
         .attr("width", 364.1)
-        .attr("height", 364.1);
+        .attr("height", 364.1)
+        .style("fill", "#0E402D");
 
       var rectangle = symbol.append("rect")
         .attr("x", 400)
         .attr("y", 100)
         .attr("width", 110.9)
-        .attr("height", 110.9);
+        .attr("height", 110.9)
+        .style("fill", "#477998");
 
       var rectangle = symbol.append("rect")
         .attr("x", 600)
         .attr("y", 150)
         .attr("width", 59.8)
-        .attr("height", 59.8);
+        .attr("height", 59.8)
+        .style("fill", "#F6474D");
 
       var rectangle = symbol.append("rect")
         .attr("x", 800)
         .attr("y", 150)
         .attr("width", 3.8)
-        .attr("height", 3.8);
+        .attr("height", 3.8)
+        .style("fill", "#A3333D");
 
       const symbolData = [{
           "Shifting Agriculture": 11.09
@@ -74,6 +71,7 @@
         }
       ]
 
+      //Dual Axis Line Chart
       const tclLineData = [{
           "Year": "2001",
           "TCL": 2.75,
@@ -176,8 +174,8 @@
         .datum(co2LineData)
         .attr("class", "line")
         .attr("d", line2)
-
     }
+
   </script>
 </head>
 
@@ -207,4 +205,6 @@
     <figure id="line-chart"></figure>
   </section>
 
-</body></html>
+</body>
+
+</html>

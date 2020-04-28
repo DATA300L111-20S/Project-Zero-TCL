@@ -31,7 +31,7 @@
   // Load external data and boot
   d3.queue()
     .defer(d3.json, "https://raw.githubusercontent.com/codeforamerica/click_that_hood/master/public/data/brazil-states.geojson")
-    .defer(d3.csv, "https://raw.githubusercontent.com/DATA300L111-20S/Project-Zero-TCL/master/tcl", function(d) {
+    .defer(d3.csv, "https://raw.githubusercontent.com/DATA300L111-20S/Project-Zero-TCL/master/tcl.csv", function(d) {
       data.set(d.code, +d.pop);
     })
     .await(ready);

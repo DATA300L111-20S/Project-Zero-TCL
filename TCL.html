@@ -17,8 +17,50 @@
       //Choropleth Map
       const brazilMap = d3.select("#choropleth-map")
         .append("svg")
-        .attr("width", 800)
-        .attr("height", 600);
+        .attr("width", 700)
+        .attr("height", 500)
+
+      var svg = d3.select("svg"),
+        width = +svg.attr("width"),
+        height = +svg.attr("height");
+
+      var path = d3.geoPath();
+      var projection = d3.geoMercator()
+        .scale(600)
+        .center([-50, -15])
+        .translate([width / 2, height / 2]);
+
+      // Data and color scale
+      var data = d3.map();
+
+      var colorScale = d3.scaleThreshold()
+        .domain([6, 13, 19])
+        .range(d3.schemeGreens[4]);
+
+      d3.csv("tcl.csv", data => {
+        d3.json("https://raw.githubusercontent.com/codeforamerica/click_that_hood/master/public/data/brazil-states.geojson", topo => {
+
+          // Draw the map
+          svg.append("g")
+            .selectAll("path")
+            .data(topo.features)
+            .enter()
+            .append("path")
+
+            //draw each country
+            .attr("d", d3.geoPath()
+              .projection(projection)
+            )
+
+            //set color of each country
+            .attr("fill", function(d) {
+              const state = d.properties.name;
+              const stateData = data.filter(row => row.state === state);
+              const percent = stateData[0]["percentage"];
+              return colorScale(percent);
+            });
+        });
+      });
 
       //Bar Chart
 
@@ -175,7 +217,6 @@
         .attr("class", "line")
         .attr("d", line2)
     }
-
   </script>
 </head>
 
@@ -205,6 +246,4 @@
     <figure id="line-chart"></figure>
   </section>
 
-</body>
-
-</html>
+</body></html>

@@ -7,13 +7,15 @@
 <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
 
 <!-- Create an element where the map will take place -->
-<svg id="my_dataviz" width="700" height="500"></svg>
+<svg id="choropleth-map" width="700" height="500"></svg>
 
 <script>
   // The svg
   var svg = d3.select("svg"),
     width = +svg.attr("width"),
     height = +svg.attr("height");
+
+  //Tooltip
 
   // Map and projection
   var path = d3.geoPath();
@@ -24,35 +26,34 @@
 
   // Data and color scale
   var data = d3.map();
+
   var colorScale = d3.scaleThreshold()
-    .domain([100000, 1000000, 10000000, 30000000, 100000000, 500000000])
-  //.range(d3.schemeGreens[7]);
+    .domain([6, 13, 19])
+    .range(d3.schemeGreens[4]);
 
-  // Load external data and boot
-  d3.queue()
-    .defer(d3.json, "https://raw.githubusercontent.com/codeforamerica/click_that_hood/master/public/data/brazil-states.geojson")
-    .defer(d3.csv, "https://raw.githubusercontent.com/DATA300L111-20S/Project-Zero-TCL/master/tcl.csv", function(d) {
-      data.set(d.code, +d.pop);
-    })
-    .await(ready);
+  d3.csv("tcl.csv", data => {
+    d3.json("https://raw.githubusercontent.com/codeforamerica/click_that_hood/master/public/data/brazil-states.geojson", topo => {
 
-  function ready(error, topo) {
+      // Draw the map
+      svg.append("g")
+        .selectAll("path")
+        .data(topo.features)
+        .enter()
+        .append("path")
 
-    // Draw the map
-    svg.append("g")
-      .selectAll("path")
-      .data(topo.features)
-      .enter()
-      .append("path")
-      // draw each country
-      .attr("d", d3.geoPath()
-        .projection(projection)
-      )
-      // set the color of each country
-      .attr("fill", function(d) {
-        d.total = data.get(d.id) || 0;
-        return colorScale(d.total);
-      });
-  }
+        //draw each country
+        .attr("d", d3.geoPath()
+          .projection(projection)
+        )
+
+        //set color of each country
+        .attr("fill", function(d) {
+          const state = d.properties.name;
+          const stateData = data.filter(row => row.state === state);
+          const percent = stateData[0]["percentage"];
+          return colorScale(percent);
+        });
+    });
+  });
 
 </script>

@@ -63,11 +63,13 @@
       var states = d3.keys(data[0]).filter(function(key) {
         return key !== "Year";
       });
-      d.state = states.map(function(name) {
-        return {
-          name: name,
-          value: +d[name]
-        };
+      data.forEach(function(d) {
+        d.state = states.map(function(name) {
+          return {
+            name: name,
+            value: +d[name]
+          };
+        });
       });
 
       x0.domain(data.map(function(d) {

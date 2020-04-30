@@ -15,10 +15,10 @@
     window.onload = () => {
 
       //Choropleth Map
-      const brazilMap = d3.select("#choropleth-map")
+      var brazilMap = d3.select("#choropleth-map")
         .append("svg")
         .attr("width", 700)
-        .attr("height", 500)
+        .attr("height", 500);
 
       var svg = d3.select("svg"),
         width = +svg.attr("width"),
@@ -67,34 +67,33 @@
       //Proportional Symbol Chart
       const symbol = d3.select("#symbol-chart")
         .append("svg")
-        .attr("width", 900)
-        .attr("height", 450)
-        .attr("viewBox", "0 0 1200 300");
+        .attr("width", 800)
+        .attr("height", 400);
 
       var rectangle = symbol.append("rect")
-        .attr("x", 1)
-        .attr("y", 10)
+        .attr("x", 0)
+        .attr("y", 17.95)
         .attr("width", 364.1)
         .attr("height", 364.1)
         .style("fill", "#0E402D");
 
       var rectangle = symbol.append("rect")
-        .attr("x", 400)
-        .attr("y", 100)
+        .attr("x", 384.1)
+        .attr("y", 144.55)
         .attr("width", 110.9)
         .attr("height", 110.9)
         .style("fill", "#477998");
 
       var rectangle = symbol.append("rect")
-        .attr("x", 600)
-        .attr("y", 150)
+        .attr("x", 515)
+        .attr("y", 170.1)
         .attr("width", 59.8)
         .attr("height", 59.8)
         .style("fill", "#F6474D");
 
       var rectangle = symbol.append("rect")
-        .attr("x", 800)
-        .attr("y", 150)
+        .attr("x", 594.8)
+        .attr("y", 198.1)
         .attr("width", 3.8)
         .attr("height", 3.8)
         .style("fill", "#A3333D");
@@ -217,6 +216,7 @@
         .attr("class", "line")
         .attr("d", line2)
     }
+
   </script>
 </head>
 
@@ -235,7 +235,7 @@
 
   <section>
     <h2>Tree Cover Loss by Driving Factor.</h2>
-    <h3>The symbol's size represents the amount of Mha that driver has contributed to tree cover loss between 2001 and 2018.</h3>
+    <h3>The symbol's size represents the amount of Mha that that driver has contributed to tree cover loss between 2001 and 2018.</h3>
     <!--Pro.Symbol Chart-->
     <figure id="symbol-chart"></figure>
   </section>
@@ -246,4 +246,6 @@
     <figure id="line-chart"></figure>
   </section>
 
-</body></html>
+</body>
+
+</html>

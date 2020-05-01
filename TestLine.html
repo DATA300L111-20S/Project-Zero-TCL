@@ -19,22 +19,56 @@
       },
       width = 830 - margin.right - margin.left,
       height = 430 - margin.top - margin.bottom;
-// Define x and y1/y2 scales
+    // Define x and y1/y2 scales
     var x = d3.scale.ordinal()
       .rangeRoundBands([0, width], .1);
-    var y0 = d3.scale.linear().range([height, 0]);
     var y1 = d3.scale.linear().range([height, 0]);
+    var y2 = d3.scale.linear().range([height, 0]);
 
     var xAxis = d3.svg.axis().scale(x)
       .orient("bottom").ticks(5);
-    
-    var yAxisRight = d3.svg.axis().scale(y1)
-    .orient("right").ticks(5); 
 
+    var yAxisLeft = d3.svg.axis(y1)
+      .orient("right").ticks(5);
+
+    var yAxisRight = d3.svg.axis().scale(y2)
+      .orient("right").ticks(5);
+    // Define Lines     
+    var vline1 = d3.svg.line()
+      .x(function(d) {
+        return x(d.state);
+      })
+      .y(function(d) {
+        return y1(d.TCL)
+      })
+
+    var vline2 = d3.svg.line()
+      .x(function(d) {
+        return x(d.state);
+      })
+      .y(function(d) {
+        return y2(d.CO2)
+      })
+
+    var svg = d3.select("body")
+      .append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+    // Parse CSV Data
+    d3.csv("dual_line.csv", function(error, data) {
+          data.forEach(function(d) {
+                d.state = states.map(function(name) {
+                  return {
+                    name: name,
+                    value: +d[name]
+                  };
+                  d.TCL = +d.TCL;
+                  d.CO2 = +d.CO2;
+                });
 
   </script>
-
-
-
-
 </body>

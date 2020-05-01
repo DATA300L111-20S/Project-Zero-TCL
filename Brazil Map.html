@@ -15,8 +15,6 @@
     width = +svg.attr("width"),
     height = +svg.attr("height");
 
-  //Tooltip
-
   // Map and projection
   var path = d3.geoPath();
   var projection = d3.geoMercator()
@@ -41,12 +39,12 @@
         .enter()
         .append("path")
 
-        //draw each country
+        //Draw each country
         .attr("d", d3.geoPath()
           .projection(projection)
         )
 
-        //set color of each country
+        //Set color of each country
         .attr("fill", function(d) {
           const state = d.properties.name;
           const stateData = data.filter(row => row.state === state);

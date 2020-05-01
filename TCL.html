@@ -15,14 +15,13 @@
     window.onload = () => {
 
       //Choropleth Map
-      var brazilMap = d3.select("#choropleth-map")
+      const brazilMap = d3.select("#choropleth-map")
         .append("svg")
         .attr("width", 700)
         .attr("height", 500);
 
-      var svg = d3.select("svg"),
-        width = +svg.attr("width"),
-        height = +svg.attr("height");
+      var width = +brazilMap.attr("width");
+      var height = +brazilMap.attr("height");
 
       var path = d3.geoPath();
       var projection = d3.geoMercator()
@@ -37,11 +36,11 @@
         .domain([6, 13, 19])
         .range(d3.schemeGreens[4]);
 
-      d3.csv("tcl.csv", data => {
+      d3.csv("tcl.csv").then(data => {
         d3.json("https://raw.githubusercontent.com/codeforamerica/click_that_hood/master/public/data/brazil-states.geojson", topo => {
 
           // Draw the map
-          svg.append("g")
+          brazilMap.append("g")
             .selectAll("path")
             .data(topo.features)
             .enter()
@@ -232,23 +231,6 @@
         .attr("height", 270)
         .attr("viewBox", "0 0 40 27");
 
-      const line1 = d3.line()
-        .x(termtoInt)
-        .y(d => (8 - d["TCL"]));
-
-      lineChart.append("path")
-        .datum(tclLineData)
-        .attr("class", "line")
-        .attr("d", line1);
-
-      const line2 = d3.line()
-        .x(termtoInt)
-        .y(d => 3 - d["CO2"]);
-
-      lineChart.append("path")
-        .datum(co2LineData)
-        .attr("class", "line")
-        .attr("d", line2)
     }
   </script>
 </head>

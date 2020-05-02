@@ -1,20 +1,18 @@
-svg {
-  background-color: white border: 1px;
-  padding: 1em;
-  display: inline-block;
-  vertical-align: top;
+@import url("https://fonts.googleapis.com/css2?family=Jost:wght@300&display=swap");
+
+
+html {
+  font-size: 120%;
+  font-family: "Jost", sans-serif;
+  background-color: #eee;
+  overflow-y: scroll
 }
 
 body {
-  background-color: white
+  padding 0 2%;
+  margin: 0;
 }
 
-rectangle {
-  fill: pink;
-}
-
-path {
-  stroke: black;
-  fill: none;
-  stroke-width: 0.35;
+header {
+  text-align: center;
 }

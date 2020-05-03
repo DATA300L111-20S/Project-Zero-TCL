@@ -10,6 +10,8 @@
   <meta charset="utf=8" />
   <link href="TCL.css" rel="stylesheets" />
   <script type="text/javascript" src="d3.js"></script>
+  <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+  <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
 
   <script>
     window.onload = () => {
@@ -39,7 +41,7 @@
       const csvPromise = d3.csv("tcl.csv");
       const jsonPromise = d3.json("https://raw.githubusercontent.com/codeforamerica/click_that_hood/master/public/data/brazil-states.geojson");
 
-      Promise.all([csvPromise])
+      Promise.all([csvPromise, jsonPromise])
         .then(data => {
           jsonPromise,
           topo => {
@@ -68,34 +70,32 @@
 
       var groupedBar = d3.select("bar-chart")
         .append("svg")
-        .attr("width",960)
+        .attr("width", 960)
         .attr("height", 500);
-      
-        var margin = {
-            top: 20,
-            right: 20,
-            left: 40
-          },
-          width = 960 - margin.left - margin.right,
-          height = 500 - margin.top - margin.bottom;
 
-      var x0 = d3.scale.ordinal()
-        .rangeRoundBands([0, width], .1);
-      var x1 = d3.scale.ordinal();
+      var margin = {
+          top: 20,
+          right: 20,
+          left: 40
+        },
+        width = 960 - margin.left - margin.right,
+        height = 500 - margin.top - margin.bottom;
 
-      var y = d3.scale.linear()
+      var x0 = d3.scaleBand()
+        .rangeRound([0, width], .1);
+      var x1 = d3.scaleBand();
+
+      var y = d3.scaleLinear()
         .range([height, 0]);
 
-      var color = d3.scale.ordinal()
+      var color = d3.scaleBand()
         .range(["#c4d6b0", "#0e402d", "#477998", "#f64740", "#a3333d"]);
 
-      var xAxis = d3.svg.axis()
-        .scale(x0)
-        .orient("bottom");
+      var xAxis = d3.axisBottom()
+        .scale(x0);
 
-      var yAxis = d3.svg.axis()
+      var yAxis = d3.axisLeft()
         .scale(y)
-        .orient("left")
         .tickFormat(d3.format(".2s"));
 
       var svg = d3.select("body").append("svg")
@@ -108,6 +108,7 @@
         var states = d3.keys(data[0]).filter(function(key) {
           return key !== "Year";
         });
+
         data.forEach(function(d) {
           d.state = states.map(function(name) {
             return {
@@ -120,7 +121,7 @@
         x0.domain(data.map(function(d) {
           return d.Year;
         }));
-        x1.domain(states).rangeRoundBands([0, x0.rangeBand()]);
+        x1.domain(states).rangeRound([0, x0.rangeBand()]);
         y.domain([0, d3.max(data, function(d) {
           return d3.max(d.state, function(d) {
             return d.value;
@@ -414,7 +415,6 @@
         .attr("viewBox", "0 0 40 27");
 
     }
-
   </script>
 </head>
 
@@ -451,6 +451,4 @@
     <li> Global Forest Watch </li>
   </section>
 
-</body>
-
-</html>
+</body></html>

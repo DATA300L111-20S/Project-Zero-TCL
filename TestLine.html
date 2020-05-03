@@ -22,7 +22,7 @@
 
 </style>
 <!-- Load d3.js -->
-<script src="https://d3js.org/d3.v5.min.js"></script>
+<script src="https://d3js.org/d3.v4.min.js"></script>
 
 <!-- construcion of simple margins -->
 <!-- Define the dual axes -->
@@ -38,35 +38,36 @@
       width = 830 - margin.right - margin.left,
       height = 430 - margin.top - margin.bottom;
     // Define x and y1/y2 scales
-    var x = d3.scale.ordinal()
-      .rangeRoundBands([0, width], .1);
-    var y1 = d3.scale.linear().range([height, 0]);
-    var y2 = d3.scale.linear().range([height, 0]);
+    var x = d3.scaleBand()
+      .rangeRound([0, width], .1);
+    var y1 = d3.scaleLinear().range([height, 0]);
+    var y2 = d3.scaleLinear().range([height, 0]);
 
-    var xAxis = d3.svg.axis().scale(x)
-      .orient("bottom").ticks(5);
+    var xAxis = d3.axisBottom().scale(x)
+      .ticks(5);
 
-    var yAxisLeft = d3.svg.axis(y1)
-      .orient("right").ticks(5);
+    var yAxisLeft = d3.axisLeft(y1)
+      .ticks(5);
 
-    var yAxisRight = d3.svg.axis().scale(y2)
-      .orient("right").ticks(5);
+    var yAxisRight = d3.axisRight().scale(y2)
+      .ticks(5);
+
     // Define Lines     
-    var vline1 = d3.svg.line()
+    var vline1 = d3.line()
       .x(function(d) {
         return x(d.state);
       })
       .y(function(d) {
         return y1(d.TCL)
-      })
+      });
 
-    var vline2 = d3.svg.line()
+    var vline2 = d3.line()
       .x(function(d) {
         return x(d.state);
       })
       .y(function(d) {
         return y2(d.CO2)
-      })
+      });
 
     var svg = d3.select("body")
       .append("svg")
@@ -78,49 +79,50 @@
 
     // Parse CSV Data
     d3.csv("dual_line.csv", function(error, data) {
-          data.forEach(function(d) {
-            d.state = states.map(function(name) {
-              return {
-                name: name,
-                value: +d[name]
-              };
-              d.TCL = +d.TCL;
-              d.CO2 = +d.CO2;
-            });
+      data.forEach(function(d) {
+        d.state = states.map(function(name) {
+          return {
+            name: name,
+            value: +d[name]
+          };
+          d.TCL = +d.TCL;
+          d.CO2 = +d.CO2;
+        });
 
-            // Set range of x and y domain
-            x.domain(d3.extent(data, function(d) {
-              return d.state;
-            }));
-            y1.domain([0, d3.max(data, function(d) {
-              return Math.max(d.TCL);
-            })]);
-            y2.domain([0, d3.max(data, function(d) {
-              return Math.max(d.CO2);
-            })]);
+        // Set range of x and y domain
+        x.domain(d3.extent(data, function(d) {
+          return d.state;
+        }));
+        y1.domain([0, d3.max(data, function(d) {
+          return Math.max(d.TCL);
+        })]);
+        y2.domain([0, d3.max(data, function(d) {
+          return Math.max(d.CO2);
+        })]);
 
-            svg.append("path") // Vline1
-              .attr("d", vline1(data));
+        svg.append("path") // Vline1
+          .attr("d", vline1(data));
 
-            svg.append("path") // vline2
-              .style("stroke", "blue")
-              .attr("d", vline2(data));
+        svg.append("path") // vline2
+          .style("stroke", "blue")
+          .attr("d", vline2(data));
 
-            svg.append("g") // add x axis
-              .attr("class", "x axis")
-              .attr("transform", "translate(0," + height + ")")
-              .call(xAxis);
+        svg.append("g") // add x axis
+          .attr("class", "x axis")
+          .attr("transform", "translate(0," + height + ")")
+          .call(xAxis);
 
-            svg.append("g") // add y axis
-              .attr("class", "y axis")
-              .attr("fill", "blue")
-              .call(yAxisLeft);
+        svg.append("g") // add y axis
+          .attr("class", "y axis")
+          .attr("fill", "blue")
+          .call(yAxisLeft);
 
-            svg.append("g") //
-              .attr("class", "y axis")
-              .attr("fill", "purple")
-              .call(yAxisRight);
-          });
+        svg.append("g") //
+          .attr("class", "y axis")
+          .attr("fill", "purple")
+          .call(yAxisRight);
+      });
+    });
 
   </script>
 </body>

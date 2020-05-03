@@ -9,7 +9,7 @@ html {
 }
 
 body {
-  padding 0 2%;
+  padding: 0 2%;
   margin: 0;
 }
 
@@ -17,6 +17,25 @@ header {
   text-align: center;
 }
 
-main {
+  {
   display: flex
+}
+
+body {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.bar {
+  fill: steelblue;
+}
+
+.x.axis path {
+  display: none;
 }

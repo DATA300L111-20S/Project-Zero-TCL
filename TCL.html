@@ -36,30 +36,33 @@
         .domain([6, 13, 19])
         .range(d3.schemeGreens[4]);
 
-      d3.csv("tcl.csv").then(data => {
-        d3.json("https://raw.githubusercontent.com/codeforamerica/click_that_hood/master/public/data/brazil-states.geojson", topo => {
+      const csvPromise = d3.csv("tcl.csv");
+      const jsonPromise = d3.json("https://raw.githubusercontent.com/codeforamerica/click_that_hood/master/public/data/brazil-states.geojson");
 
-          // Draw the map
-          brazilMap.append("g")
-            .selectAll("path")
-            .data(topo.features)
-            .enter()
-            .append("path")
+      Promise.all([csvPromise])
+        .then(data => {
+          jsonPromise,
+          topo => {
+            brazilMap.append("g")
+              .selectAll("path")
+              .data(topo.features)
+              .enter()
+              .append("path")
 
-            //draw each country
-            .attr("d", d3.geoPath()
-              .projection(projection)
-            )
+              //draw each country
+              .attr("d", d3.geoPath()
+                .projection(projection)
+              )
 
-            //set color of each country
-            .attr("fill", function(d) {
-              const state = d.properties.name;
-              const stateData = data.filter(row => row.state === state);
-              const percent = stateData[0]["percentage"];
-              return colorScale(percent);
-            });
+              //set color of each country
+              .attr("fill", function(d) {
+                const state = d.properties.name;
+                const stateData = data.filter(row => row.state === state);
+                const percent = stateData[0]["percentage"];
+                return colorScale(percent);
+              });
+          };
         });
-      });
 
       //Bar Chart
 
@@ -180,7 +183,7 @@
         .attr("fill", "black");
 
       symbol.append("text")
-        .text("Others")
+        .text("Others*")
         .attr("x", 630)
         .attr("y", 178)
         .attr("text-anchor", "middle")
@@ -305,6 +308,7 @@
     <h3>The symbol's size represents the amount of Mha that that driver has contributed to tree cover loss between 2001 and 2018.</h3>
     <!--Pro.Symbol Chart-->
     <figure id="symbol-chart"></figure>
+    <h4>*Includes tree cover loss driven by Wildfire, Urbanization, and other unknown causes.</h4>
   </section>
 
   <section>

@@ -100,7 +100,7 @@
       svg.append("path")
         .data([data])
         .attr("class", "line")
-        .style("stroke", "red")
+        .style("stroke", "purple")
         .attr("d", valueline2);
 
       // Add the X Axis
@@ -110,12 +110,12 @@
 
       // Add the Y1 Axis
       svg.append("g")
-        .attr("class", "axisSteelBlue")
+        .attr("class", "blue")
         .call(d3.axisLeft(y1));
 
       // Add the Y2 Axis
       svg.append("g")
-        .attr("class", "axisRed")
+        .attr("class", "axisPink")
         .attr("transform", "translate( " + width + ", 0 )")
         .call(d3.axisRight(y2));
 

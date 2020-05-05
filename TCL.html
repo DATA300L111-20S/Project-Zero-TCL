@@ -42,28 +42,25 @@
       const jsonPromise = d3.json("https://raw.githubusercontent.com/codeforamerica/click_that_hood/master/public/data/brazil-states.geojson");
 
       Promise.all([csvPromise, jsonPromise])
-        .then(data => {
-          jsonPromise,
-          topo => {
-            brazilMap.append("g")
-              .selectAll("path")
-              .data(topo.features)
-              .enter()
-              .append("path")
+        .then(([data, topo]) => {
+          brazilMap.append("g")
+            .selectAll("path")
+            .data(topo.features)
+            .enter()
+            .append("path")
 
-              //Draw each country
-              .attr("d", d3.geoPath()
-                .projection(projection)
-              )
+            //Draw each country
+            .attr("d", d3.geoPath()
+              .projection(projection)
+            )
 
-              //set color of each country
-              .attr("fill", function(d) {
-                const state = d.properties.name;
-                const stateData = data.filter(row => row.state === state);
-                const percent = stateData[0]["percentage"];
-                return colorScale(percent);
-              });
-          };
+            //set color of each country
+            .attr("fill", function(d) {
+              const state = d.properties.name;
+              const stateData = data.filter(row => row.state === state);
+              const percent = stateData[0]["percentage"];
+              return colorScale(percent);
+            });
         });
 
       //Bar Chart - entire code breaks here with bar chart code
@@ -415,7 +412,6 @@
         .attr("viewBox", "0 0 40 27");
 
     }
-
   </script>
 </head>
 
@@ -452,6 +448,4 @@
     <li> Global Forest Watch </li>
   </section>
 
-</body>
-
-</html>
+</body></html>

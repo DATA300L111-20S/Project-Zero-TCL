@@ -17,24 +17,25 @@ header {
   text-align: center;
 }
 
- body {
-    font: 10px sans-serif;
-  }
+  {
+  display: flex
+}
 
-  .axis path,
-  .axis line {
-    fill: none;
-    stroke: #000;
-    shape-rendering: crispEdges;
-  }
+body {
+  font: 10px sans-serif;
+}
 
-  .bar {
-    fill: steelblue;
-  }
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
 
-  .x.axis path {
-    display: none;
-  }
+.bar {
+  fill: steelblue;
+}
 
-</style>
-
+.x.axis path {
+  display: none;
+}

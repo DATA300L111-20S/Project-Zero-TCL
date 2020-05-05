@@ -4,8 +4,8 @@
 
 .line {
   fill: none;
-  stroke: steelblue;
-  stroke-width: 2px;
+  stroke: #00DB00;
+  stroke-width: 6px;
 }
 
 .axisSteelBlue text{
@@ -80,7 +80,7 @@ d3.csv("dual_line.csv", function(error, data) {
   svg.append("path")
       .data([data])
       .attr("class", "line")
-      .style("stroke", "red")
+      .style("stroke", "green")
       .attr("d", vline2);
 
   // Add the X Axis

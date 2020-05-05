@@ -1,210 +1,105 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-<style>
-  /* set the CSS */
+<style> /* set the CSS */
 
-  .line {
-    fill: none;
-    stroke: steelblue;
-    stroke-width: 2px;
-  }
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 2px;
+}
 
-  .axisSteelBlue text {
-    fill: steelblue;
-  }
+.axisSteelBlue text{
+  fill: steelblue;
+}
 
-<<<<<<< HEAD
-  .axisRed text {
-    fill: red;
-  }
-=======
-</style>
-<!-- Load d3.js -->
-<script src="https://d3js.org/d3.v4.min.js"></script>
->>>>>>> c56591b25df97753d0e1e823a0e9cd727fb54326
+.axisRed text{
+  fill: red;
+}
 
 </style>
-
 <body>
 
-  <!-- load the d3.js library -->
-  <script src="https://d3js.org/d3.v4.min.js"></script>
-  <script>
-    // set the dimensions and margins of the graph
-    var margin = {
-        top: 20,
-        right: 40,
-        bottom: 30,
-        left: 50
-      },
-<<<<<<< HEAD
-      width = 960 - margin.left - margin.right,
-      height = 500 - margin.top - margin.bottom;
+<!-- load the d3.js library -->    	
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script>
 
-    
-    // set the ranges
-    var x = d3.scaleLinear().range([0, width]);
-    var y1 = d3.scaleLinear().range([height, 0]);
-    var y2 = d3.scaleLinear().range([height, 0]);
+// set the dimensions and margins of the graph
+var margin = {top: 20, right: 40, bottom: 30, left: 50},
+    width = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
 
-    // define the 1st line
-    var valueline = d3.line()
-=======
-      width = 830 - margin.right - margin.left,
-      height = 430 - margin.top - margin.bottom;
-    // Define x and y1/y2 scales
-    var x = d3.scaleBand()
-      .rangeRound([0, width], .1);
-    var y1 = d3.scaleLinear().range([height, 0]);
-    var y2 = d3.scaleLinear().range([height, 0]);
 
-    var xAxis = d3.axisBottom().scale(x)
-      .ticks(5);
+// set the ranges
+var x = d3.scaleLinear().range([0, width]);
+var y1 = d3.scaleLinear().range([height, 0]);
+var y2 = d3.scaleLinear().range([height, 0]);
 
-    var yAxisLeft = d3.axisLeft(y1)
-      .ticks(5);
+// define the 1st line
+var vline1 = d3.line()
+    .x(function(d) { return x(d.Year); })
+    .y(function(d) { return y1(d.TCL); });
 
-    var yAxisRight = d3.axisRight().scale(y2)
-      .ticks(5);
+// define the 2nd line
+var vline2 = d3.line()
+    .x(function(d) { return x(d.Year); })
+    .y(function(d) { return y2(d.CO2); });
 
-    // Define Lines     
-    var vline1 = d3.line()
->>>>>>> c56591b25df97753d0e1e823a0e9cd727fb54326
-      .x(function(d) {
-        return x(d.Year);
-      })
-      .y(function(d) {
-<<<<<<< HEAD
-        return y1(d.TCL);
-      });
+// append the svg obgect to the body of the page
+// appends a 'group' element to 'svg'
+// moves the 'group' element to the top left margin
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform",
+          "translate(" + margin.left + "," + margin.top + ")");
 
-    // define the 2nd line
-    var valueline2 = d3.line()
-=======
-        return y1(d.TCL)
-      });
+// Get the data
+d3.csv("dual_line.csv", function(error, data) {
+  if (error) throw error;
 
-    var vline2 = d3.line()
->>>>>>> c56591b25df97753d0e1e823a0e9cd727fb54326
-      .x(function(d) {
-        return x(d.Year);
-      })
-      .y(function(d) {
-<<<<<<< HEAD
-        return y1(d.CO2);
-=======
-        return y2(d.CO2)
->>>>>>> c56591b25df97753d0e1e823a0e9cd727fb54326
-      });
+  // format the data
+  data.forEach(function(d) {
+      d.Year = +d.Year;
+      d.close = +d.TCL;
+      d.open = +d.CO2;
+  });
 
-    // append the svg obgect to the body of the page
-    // appends a 'group' element to 'svg'
-    // moves the 'group' element to the top left margin
-    var svg = d3.select("body").append("svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
-      .append("g")
-      .attr("transform",
-        "translate(" + margin.left + "," + margin.top + ")");
+  // Scale the range of the data
+  x.domain(d3.extent(data, function(d) { return d.Year; }));
+  y1.domain([0, d3.max(data, function(d) {return Math.max(d.TCL);})]);
+  y2.domain([0, d3.max(data, function(d) {return Math.max(d.CO2); })]);
 
-    // Get the data
-    d3.csv("dual_line.csv", function(error, data) {
-<<<<<<< HEAD
-      if (error) throw error;
+  // Add the valueline path.
+  svg.append("path")
+      .data([data])
+      .attr("class", "line")
+      .attr("d", vline1);
 
-      // format the data
-      data.forEach(function(d) {
-        d.Year = +d.Year;
-        d.close = +d.TCL;
-        d.open = +d.CO2;
-      });
+  // Add the valueline2 path.
+  svg.append("path")
+      .data([data])
+      .attr("class", "line")
+      .style("stroke", "red")
+      .attr("d", vline2);
 
-      // Scale the range of the data
-      x.domain(d3.extent(data, function(d) {
-        return d.Year;
-      }));
-      y1.domain([0, d3.max(data, function(d) {
-        return Math.max(d.TCL);
-      })]);
-      y2.domain([0, d3.max(data, function(d) {
-        return Math.max(d.CO2);
-      })]);
+  // Add the X Axis
+  svg.append("g")
+      .attr("transform", "translate(0," + height + ")")
+      .call(d3.axisBottom(x));
 
-      // Add the valueline path.
-      svg.append("path")
-        .data([data])
-        .attr("class", "line")
-        .attr("d", valueline);
+  // Add the Y0 Axis
+  svg.append("g")
+      .attr("class", "axisSteelBlue")
+      .call(d3.axisLeft(y1));
 
-      // Add the valueline2 path.
-      svg.append("path")
-        .data([data])
-        .attr("class", "line")
-        .style("stroke", "purple")
-        .attr("d", valueline2);
+  // Add the Y1 Axis
+  svg.append("g")
+      .attr("class", "axisRed")
+      .attr("transform", "translate( " + width + ", 0 )")
+      .call(d3.axisRight(y2));
 
-      // Add the X Axis
-      svg.append("g")
-        .attr("transform", "translate(0," + height + ")")
-        .call(d3.axisBottom(x));
+});
 
-      // Add the Y1 Axis
-      svg.append("g")
-        .attr("class", "blue")
-        .call(d3.axisLeft(y1));
-
-      // Add the Y2 Axis
-      svg.append("g")
-        .attr("class", "axisPink")
-        .attr("transform", "translate( " + width + ", 0 )")
-        .call(d3.axisRight(y2));
-
-=======
-      data.forEach(function(d) {
-        d.state = states.map(function(name) {
-          return {
-            name: name,
-            value: +d[name]
-          };
-          d.TCL = +d.TCL;
-          d.CO2 = +d.CO2;
-        });
-
-        // Set range of x and y domain
-        x.domain(d3.extent(data, function(d) {
-          return d.state;
-        }));
-        y1.domain([0, d3.max(data, function(d) {
-          return Math.max(d.TCL);
-        })]);
-        y2.domain([0, d3.max(data, function(d) {
-          return Math.max(d.CO2);
-        })]);
-
-        svg.append("path") // Vline1
-          .attr("d", vline1(data));
-
-        svg.append("path") // vline2
-          .style("stroke", "blue")
-          .attr("d", vline2(data));
-
-        svg.append("g") // add x axis
-          .attr("class", "x axis")
-          .attr("transform", "translate(0," + height + ")")
-          .call(xAxis);
-
-        svg.append("g") // add y axis
-          .attr("class", "y axis")
-          .attr("fill", "blue")
-          .call(yAxisLeft);
-
-        svg.append("g") //
-          .attr("class", "y axis")
-          .attr("fill", "purple")
-          .call(yAxisRight);
-      });
->>>>>>> c56591b25df97753d0e1e823a0e9cd727fb54326
-    });
-
-  </script>
+</script>
 </body>

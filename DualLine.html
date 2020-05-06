@@ -5,15 +5,19 @@
 .line {
   fill: none;
   stroke: #00DB00;
-  stroke-width: 6px;
+  stroke-width: 4px;
 }
 
-.axisSteelBlue text{
-  fill: steelblue;
+.axisLightGreen text{
+  fill: #32cd32;
+  font-weight: bold;
+  font-size: small;
 }
 
-.axisRed text{
-  fill: red;
+.axisDarkGreen text{
+  fill: green;
+  font-weight: bold;
+  font-size: small;
 }
 
 </style>
@@ -23,23 +27,23 @@
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script>
 
-// set the dimensions and margins of the graph
+// set dimensions and margins of the graph
 var margin = {top: 20, right: 40, bottom: 30, left: 50},
     width = 960 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
 
 
-// set the ranges
-var x = d3.scaleLinear().range([0, width]);
+// set x and y range
+var x = d3.scaleLinear().rangeRound([0, width]);
 var y1 = d3.scaleLinear().range([height, 0]);
 var y2 = d3.scaleLinear().range([height, 0]);
 
-// define the 1st line
+// define line1
 var vline1 = d3.line()
     .x(function(d) { return x(d.Year); })
     .y(function(d) { return y1(d.TCL); });
 
-// define the 2nd line
+// define line2
 var vline2 = d3.line()
     .x(function(d) { return x(d.Year); })
     .y(function(d) { return y2(d.CO2); });
@@ -54,14 +58,14 @@ var svg = d3.select("body").append("svg")
     .attr("transform",
           "translate(" + margin.left + "," + margin.top + ")");
 
-// Get the data
+// Parse data
 d3.csv("dual_line.csv", function(error, data) {
   if (error) throw error;
 
   // format the data
   data.forEach(function(d) {
-      d.Year = +d.Year;
-      d.close = +d.TCL;
+     d.Year = parseInt(d.Year);
+      d.close = +d.TCL;parseInt
       d.open = +d.CO2;
   });
 
@@ -70,13 +74,13 @@ d3.csv("dual_line.csv", function(error, data) {
   y1.domain([0, d3.max(data, function(d) {return Math.max(d.TCL);})]);
   y2.domain([0, d3.max(data, function(d) {return Math.max(d.CO2); })]);
 
-  // Add the valueline path.
+  // Add the line path 1.
   svg.append("path")
       .data([data])
       .attr("class", "line")
       .attr("d", vline1);
 
-  // Add the valueline2 path.
+  // Add the line path 2.
   svg.append("path")
       .data([data])
       .attr("class", "line")
@@ -88,14 +92,14 @@ d3.csv("dual_line.csv", function(error, data) {
       .attr("transform", "translate(0," + height + ")")
       .call(d3.axisBottom(x));
 
-  // Add the Y0 Axis
-  svg.append("g")
-      .attr("class", "axisSteelBlue")
-      .call(d3.axisLeft(y1));
-
   // Add the Y1 Axis
   svg.append("g")
-      .attr("class", "axisRed")
+      .attr("class", "axisLightGreen")
+      .call(d3.axisLeft(y1));
+
+  // Add the Y2 Axis
+  svg.append("g")
+      .attr("class", "axisDarkGreen")
       .attr("transform", "translate( " + width + ", 0 )")
       .call(d3.axisRight(y2));
 

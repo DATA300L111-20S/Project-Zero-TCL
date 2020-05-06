@@ -1,57 +1,37 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <style>
-  body {
-    font: 10px sans-serif;
-  }
-
-  .axis path,
-  .axis line {
-    fill: none;
-    stroke: #000;
-    shape-rendering: crispEdges;
-  }
-
-  .bar {
-    fill: steelblue;
-  }
-
-  .x.axis path {
+  .axis .domain {
     display: none;
   }
 
 </style>
 
 <body>
-  <script src="http://d3js.org/d3.v3.min.js"></script>
+  <svg width="1160" height="600"></svg>
+  <script src="http://d3js.org/d3.v4.min.js"></script>
   <script>
-    var margin = {
+    var svg = d3.select("svg"),
+      margin = {
         top: 20,
         right: 20,
         bottom: 30,
         left: 40
       },
-      width = 960 - margin.left - margin.right,
-      height = 500 - margin.top - margin.bottom;
+      width = +svg.attr("width") - margin.left - margin.right,
+      height = +svg.attr("height") - margin.top - margin.bottom,
+      g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    var x0 = d3.scale.ordinal()
-      .rangeRoundBands([0, width], .1);
-    var x1 = d3.scale.ordinal();
+    var x0 = d3.scaleBand()
+      .rangeRound([0, width], .1);
+    var x1 = d3.scaleBand()
+      .padding(0.05);
 
-    var y = d3.scale.linear()
-      .range([height, 0]);
+    var y = d3.scaleLinear()
+      .rangeRound([height, 0]);
 
-    var color = d3.scale.ordinal()
-      .range(["#c4d6b0", "#0e402d", "#477998", "#f64740", "#a3333d"]);
-
-    var xAxis = d3.svg.axis()
-      .scale(x0)
-      .orient("bottom");
-
-    var yAxis = d3.svg.axis()
-      .scale(y)
-      .orient("left")
-      .tickFormat(d3.format(".2s"));
+    var color = d3.scaleOrdinal()
+      .range(["#1E5631", "#728c69", "#477998", "#FFD933", "#A4DE02"]);
 
     var svg = d3.select("body").append("svg")
       .attr("width", width + margin.left + margin.right)
@@ -71,82 +51,101 @@
           };
         });
       });
+      var keys = data.columns.slice(1);
 
+      console.log('keys');
+      console.log(keys);
       x0.domain(data.map(function(d) {
         return d.Year;
       }));
-      x1.domain(states).rangeRoundBands([0, x0.rangeBand()]);
+      x1.domain(keys).rangeRound([0, x0.bandwidth()]);
       y.domain([0, d3.max(data, function(d) {
         return d3.max(d.state, function(d) {
           return d.value;
         });
-      })]);
+      })]).nice();
 
-      svg.append("g")
-        .attr("class", "x axis")
-        .attr("transform", "translate(0," + height + ")")
-        .call(xAxis);
 
-      svg.append("g")
-        .attr("class", "y axis")
-        .call(yAxis)
-        .append("text")
-        .attr("transform", "rotate(-90)")
-        .attr("y", 6)
-        .attr("dy", ".71em")
-        .style("text-anchor", "end")
-        .text("Tree Loss Cover");
-
-      var year = svg.selectAll(".year")
+      g.append("g")
+        .selectAll("g")
         .data(data)
         .enter().append("g")
-        .attr("class", "g")
+        .attr("class", "bar")
         .attr("transform", function(d) {
           return "translate(" + x0(d.Year) + ",0)";
-        });
-      year.selectAll("rect")
+        })
+        .selectAll("rect")
         .data(function(d) {
-          return d.state;
+          return keys.map(function(key) {
+            return {
+              key: key,
+              value: d[key]
+            };
+          });
         })
         .enter().append("rect")
-        .attr("width", x1.rangeBand())
         .attr("x", function(d) {
-          return x1(d.name);
+          return x1(d.key);
         })
         .attr("y", function(d) {
           return y(d.value);
         })
+        .attr("width", x1.bandwidth())
         .attr("height", function(d) {
           return height - y(d.value);
         })
-        .style("fill", function(d) {
-          return color(d.name);
+        .attr("fill", function(d) {
+          return color(d.key);
         });
-      var legend = svg.selectAll(".legend")
-        .data(states.slice().reverse())
+
+
+      g.append("g")
+        .attr("class", "axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x0));
+
+      g.append("g")
+        .attr("class", "y axis")
+        .call(d3.axisLeft(y))
+        .append("text") 
+        .attr("x", 5)
+        .attr("y", y(y.ticks().pop()) + 1)
+        .attr("dy", "0.50em")
+        .attr("fill", "#000")
+        .attr("font-weight", "bold")
+        .attr("text-anchor", "start")
+        .text("Tree Loss Cover");
+
+      var legend = g.append("g")
+        .attr("font-family", "sans-serif")
+        .attr("font-size", 12)
+        .attr("text-anchor", "end")
+        .selectAll("g")
+        .data(keys.slice().reverse())
         .enter().append("g")
-        .attr("class", "legend")
         .attr("transform", function(d, i) {
           return "translate(0," + i * 20 + ")";
         });
+
       legend.append("rect")
-        .attr("x", width - 18)
-        .attr("width", 18)
-        .attr("height", 18)
-        .style("fill", color);
+        .attr("x", width)
+        .attr("width", 15)
+        .attr("height", 15)
+        .attr("fill", color)
+        .attr("stroke", color)
+        .attr("stroke-width", 2)
+        .on("click", function(d) {
+          update(d)
+        });
+
       legend.append("text")
-        .attr("x", width - 24)
-        .attr("y", 9)
-        .attr("dy", ".35em")
-        .style("text-anchor", "end")
+        .attr("x", width - 14)
+        .attr("y", 10)
+        .attr("dy", "0.32em")
         .text(function(d) {
           return d;
         });
-
-
     });
 
   </script>
-
-
 </body>

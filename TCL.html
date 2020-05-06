@@ -35,6 +35,12 @@
       // Data and color scale
       var data = d3.map();
 
+      //Adding tooltip
+      const dic = d3.select("g")
+        .append("div")
+        .attr('class', 'tooltip')
+        .style('opacity', 0);
+
       var colorScale = d3.scaleThreshold()
         .domain([6, 13, 19])
         .range(d3.schemeGreens[4]);
@@ -61,6 +67,15 @@
               const stateData = data.filter(row => row.state === state);
               const percent = stateData[0]["percentage"];
               return colorScale(percent);
+            })
+
+            //Adding the tooltip
+            .on('mouseover', d => {
+              div
+                .transition()
+                .duration(200)
+                .style('opacity', 0.9);
+              //Continue adding tooltip code here
             });
         });
 
@@ -82,11 +97,7 @@
         .attr("height", 15)
         .attr("fill", colorScale)
         .attr("stroke", colorScale)
-        .attr("stroke-width", 2)
-        .on("click", function(d) {
-          update(d)
-        });
-
+        .attr("stroke-width", 2);
 
       //Bar Chart - entire code breaks here with bar chart code
 

@@ -28,7 +28,7 @@
 
       var path = d3.geoPath();
       var projection = d3.geoMercator()
-        .scale(600)
+        .scale(650)
         .center([-50, -15])
         .translate([width / 2, height / 2]);
 
@@ -80,24 +80,7 @@
         });
 
       //Legend      
-      var legend = brazilMap.append("g")
-        .attr("font-family", "sans-serif")
-        .attr("font-size", 12)
-        .attr("text-anchor", "end")
-        .selectAll("g")
-        .data(percent.reverse())
-        .enter().append("g")
-        .attr("transform", function(d, i) {
-          return "translate(0," + i * 20 + ")";
-        });
 
-      legend.append("rect")
-        .attr("x", width)
-        .attr("width", 15)
-        .attr("height", 15)
-        .attr("fill", colorScale)
-        .attr("stroke", colorScale)
-        .attr("stroke-width", 2);
 
       // Grouped Bar Chart
       var GroupBar = d3.select("#bar-chart"),

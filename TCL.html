@@ -328,101 +328,16 @@
         .attr("fill", "black");
 
       //Dual Axis Line Chart
-      const tclLineData = [{
-          "Year": "2001",
-          "TCL": 2.75,
-        },
-        {
-          "Year": "2004",
-          "TCL": 3.85,
-        },
-        {
-          "Year": "2007",
-          "TCL": 2.62,
-        },
-        {
-          "Year": "2010",
-          "TCL": 2.69,
-        },
-        {
-          "Year": "2013",
-          "TCL": 1.95,
-        },
-        {
-          "Year": "2016",
-          "TCL": 5.38,
-        },
-        {
-          "Year": "2018",
-          "TCL": 2.95,
-        }
-      ]
-
-      const co2LineData = [{
-          "Year": "2001",
-          "CO2": 0.91,
-        },
-        {
-          "Year": "2004",
-          "CO2": 1.37,
-        },
-        {
-          "Year": "2007",
-          "CO2": 0.88,
-        },
-        {
-          "Year": "2010",
-          "CO2": 0.90,
-        },
-        {
-          "Year": "2013",
-          "CO2": 0.59,
-        },
-        {
-          "Year": "2016",
-          "CO2": 1.94,
-        },
-        {
-          "Year": "2018",
-          "CO2": 1.02,
-        }
-      ]
-
-      const termtoInt = d => {
-        switch (d["Year"]) {
-          case "2001":
-            return 5;
-          case "2004":
-            return 10;
-          case "2007":
-            return 15;
-          case "2010":
-            return 20;
-          case "2013":
-            return 25;
-          case "2016":
-            return 30;
-          case "2018":
-            return 33;
-        }
-      }
-
-      const lineChart = d3.select("#line-chart")
-        .append("svg")
-        .attr("width", 400)
-        .attr("height", 270)
-        .attr("viewBox", "0 0 40 27");
 
     }
-
   </script>
 </head>
 
 <body>
   <h1>Tree Cover Loss in Brazil: A Comprehensive Visualization.</h1>
   <section>
-    <h4>Deforestation has become, no doubt, one of the leading topics concerning climate change and global sustainability, as its impact can be seen world wide leading to biodiversity loss and political turmoil. Forests make up 31% of the total land area on our planet and provide a vast amount of resources needed to sustain both human and animal life. This is especially concerning in tropical rainforests, such as Brazil, as the consequences of deforestation are vast and surmounting. However, what do we mean by deforestation and what does it look like in Brazil? On this page, we’ve set out to answer these questions with a set of interactive visualizations to understand what tree cover loss is in Brazil.
-      Please explore and read the following charts to find out more. </h4>
+    <h2><a href "https://blog.globalforestwatch.org/data-and-research/when-a-tree-falls-is-it-deforestation"> When a tree falls, is it deforestation?</a></h2>
+    <h3>Deforestation has become, no doubt, one of the leading topics concerning climate change and global sustainability, as its impact can be seen world wide leading to biodiversity loss and political turmoil. Forests make up 31% of the total land area on our planet and provide a vast amount of resources needed to sustain both human and animal life. This is especially concerning in tropical rainforests, such as Brazil, as the consequences of deforestation are vast and surmounting. However, what do we mean by deforestation and what does it look like in Brazil? On this page, we’ve set out to answer these questions with a set of interactive visualizations to understand what tree cover loss is in Brazil. <i>Please explore and read the following charts to find out more.</i></h3>
   </section>
   <section>
     <h2>Percentage of Tree Cover Loss per State in Brazil.</h2>
@@ -453,9 +368,11 @@
 
   <section>
     <h3>Sources and Code References</h3>
-    <li> Global Forest Watch </li>
+    <li><a href="https://www.globalforestwatch.org/dashboards/country/BRA?category=summary&dashboardPrompts=eyJvcGVuIjpmYWxzZSwic3RlcEluZGV4IjowLCJzdGVwc0tleSI6InNoYXJlV2lkZ2V0IiwiZm9yY2UiOnRydWV9&map=eyJkYXRhc2V0cyI6W3siZGF0YXNldCI6IjBiMDIwOGI2LWI0MjQtNGI1Ny05ODRmLWNhZGRmYTI1YmEyMiIsImxheWVycyI6WyJjYzM1NDMyZC0zOGQ3LTRhMDMtODcyZS0zYTcxYTJmNTU1ZmMiLCJiNDUzNTBlMy01YTc2LTQ0Y2QtYjBhOS01MDM4YTBkOGJmYWUiXSwiYm91bmRhcnkiOnRydWUsIm9wYWNpdHkiOjEsInZpc2liaWxpdHkiOnRydWV9LHsiZGF0YXNldCI6ImVhYjk2NTVmLWRkMzctNGJiMy1iMjIzLTRjNWRmMTY2NTY0YyIsImxheWVycyI6WyJkY2U4MDA0Zi00ZDBmLTRjMmQtYWU0Yi1kY2Y1NWUxNDAzNWYiXSwib3BhY2l0eSI6MSwidmlzaWJpbGl0eSI6dHJ1ZSwicGFyYW1zIjp7InRocmVzaCI6MzAsInZpc2liaWxpdHkiOnRydWV9fV0sImNlbnRlciI6eyJsYXQiOi0xNS4xMjgzMDA2MDg5NDA5OCwibG5nIjotNTQuMzkxMzAwMDAwMDE4ODh9LCJiZWFyaW5nIjowLCJwaXRjaCI6MCwiem9vbSI6Mi44Mjg1NDU3NDMwMTI0Mzg4LCJjYW5Cb3VuZCI6ZmFsc2UsImJib3giOltdfQ%3D%3D&treeLoss=eyJpbnRlcmFjdGlvbiI6e319&treeLossTsc=eyJpbnRlcmFjdGlvbiI6e30sImhpZ2hsaWdodGVkIjpmYWxzZX0%3D">Global Forest Watch: Brazil Dashboard</a></li>
+    <li><a href="https://www.worldwildlife.org/threats/deforestation-and-forest-degradation">World Wildlife Fund</a></li>
+    <li> <a href="https://www.reuters.com/article/us-global-forests-emissions-trfn/carbon-emissions-from-tropical-forest-loss-underestimated-scientists-say-idUSKBN1XA1CB">Reuters</a>
+    </li>
+
   </section>
 
-</body>
-
-</html>
+</body></html>

@@ -56,7 +56,7 @@
               .projection(projection)
             )
 
-            //set color of each country
+            //Set color of each country
             .attr("fill", function(d) {
               const state = d.properties.name;
               const stateData = data.filter(row => row.state === state);
@@ -65,9 +65,12 @@
             });
         });
 
+      //Legend
+
+
       //Bar Chart - entire code breaks here with bar chart code
 
-      var groupedBar = d3.select("bar-chart")
+      var groupedBar = d3.select("#bar-chart")
         .append("svg")
         .attr("width", 960)
         .attr("height", 500);

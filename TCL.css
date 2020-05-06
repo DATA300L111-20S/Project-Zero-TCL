@@ -2,7 +2,7 @@
 
 
 html {
-  font-size: 200%;
+  font-size: 140%;
   font-family: "Jost", sans-serif;
   background-color: ghostwhite;
   overflow-y: scroll
@@ -33,22 +33,19 @@ div.tooltip {
 .details {
   color: white
 }
+/* Dual Line CSS code */
 
-body {
-  font: 10px sans-serif;
-}
-
-.axis path,
-.axis line {
+.line {
   fill: none;
-  stroke: #000;
-  shape-rendering: crispEdges;
+  stroke: #00DB00;
+  stroke-width: 4px;
 }
 
-.bar {
-  fill: steelblue;
+.axisNavyBlue text{
+  fill: #000080;
+  
 }
 
-.x.axis path {
-  display: none;
+.axisMaroon text{
+  fill: #800000;
 }

@@ -100,14 +100,14 @@
           .attr("stroke-width", 2);
 
         // Grouped Bar Chart
-
-        var GroupBar = d3.select("bar-chart"),
+        var GroupBar = d3.select("#bar-chart"),
           margin = {
             top: 20,
             right: 20,
             bottom: 30,
             left: 40
           },
+
           width = +GroupBar.attr("width") - margin.left - margin.right,
           height = +GroupBar.attr("height") - margin.top - margin.bottom,
           g = GroupBar.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
@@ -124,35 +124,32 @@
           .range(["#1E5631", "#728c69", "#477998", "#FFD933", "#A4DE02"]);
 
         d3.csv("group.csv", function(error, data) {
-          var states = d3.keys(data[0]).filter(function(key) {
-            return key !== "Year";
-          });
-          data.forEach(function(d) {
-            d.state = states.map(function(name) {
-              return {
-                name: name,
-                value: +d[name]
-              };
-            });
-          });
-          var keys = data.columns.slice(1);
+              var states = d3.keys(data[0]).filter(function(key) {
+                return key !== "Year";
+              });
+              data.forEach(function(d) {
+                d.state = states.map(function(name) {
+                  return {
+                    name: name,
+                    value: +d[name]
+                  };
+                });
+              });
 
-          console.log('keys');
-          console.log(keys);
-          x0.domain(data.map(function(d) {
-            return d.Year;
-          }));
-          x1.domain(keys).rangeRound([0, x0.bandwidth()]);
-          y.domain([0, d3.max(data, function(d) {
-            return d3.max(d.state, function(d) {
-              return d.value;
-            });
-          })]).nice();
+              var keys = data.columns.slice(1);
 
-          var CSVPromise = d3.csv("group.csv");
+              console.log('keys');
+              console.log(keys);
+              x0.domain(data.map(function(d) {
+                return d.Year;
+              }));
+              x1.domain(keys).rangeRound([0, x0.bandwidth()]);
+              y.domain([0, d3.max(data, function(d) {
+                return d3.max(d.state, function(d) {
+                  return d.value;
+                });
+              })]).nice();
 
-          Promise.all = (CSVPromise)
-            .then(([data]) => {
               g.append("g")
                 .selectAll("g")
                 .data(data)
@@ -185,7 +182,6 @@
                   return color(d.key);
                 });
 
-
               g.append("g")
                 .attr("class", "axis")
                 .attr("transform", "translate(0," + height + ")")
@@ -202,269 +198,644 @@
                 .attr("font-weight", "bold")
                 .attr("text-anchor", "start")
                 .text("Tree Loss Cover");
-            });
 
-          var legend = g.append("g")
-            .attr("font-family", "sans-serif")
-            .attr("font-size", 12)
-            .attr("text-anchor", "end")
-            .selectAll("g")
-            .data(keys.slice().reverse())
-            .enter().append("g")
-            .attr("transform", function(d, i) {
-              return "translate(0," + i * 20 + ")";
-            });
+              var legend = g.append("g")
+                .attr("font-family", "sans-serif")
+                .attr("font-size", 12)
+                .attr("text-anchor", "end")
+                .selectAll("g")
+                .data(keys.slice().reverse())
+                .enter().append("g")
+                .attr("transform", function(d, i) {
+                  return "translate(0," + i * 20 + ")";
+                });
 
-          legend.append("rect")
-            .attr("x", width)
-            .attr("width", 15)
-            .attr("height", 15)
-            .attr("fill", color)
-            .attr("stroke", color)
-            .attr("stroke-width", 2)
-            .on("click", function(d) {
-              update(d)
-            });
+              legend.append("rect")
+                .attr("x", width)
+                .attr("width", 15)
+                .attr("height", 15)
 
-          legend.append("text")
-            .attr("x", width - 14)
-            .attr("y", 10)
-            .attr("dy", "0.32em")
-            .text(function(d) {
-              return d;
-            });
-        });
+                .attr("fill", colorScale)
+                .attr("stroke", colorScale)
+                .attr("stroke-width", 2);
+
+              // Grouped Bar Chart
+
+              var GroupBar = d3.select("bar-chart"),
+                margin = {
+                  top: 20,
+                  right: 20,
+                  bottom: 30,
+                  left: 40
+                },
+                width = +GroupBar.attr("width") - margin.left - margin.right,
+                height = +GroupBar.attr("height") - margin.top - margin.bottom,
+                g = GroupBar.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+              var x0 = d3.scaleBand()
+                .rangeRound([0, width], .1);
+              var x1 = d3.scaleBand()
+                .padding(0.05);
+
+              var y = d3.scaleLinear()
+                .rangeRound([height, 0]);
+
+              var color = d3.scaleOrdinal()
+                .range(["#1E5631", "#728c69", "#477998", "#FFD933", "#A4DE02"]);
+
+              d3.csv("group.csv", function(error, data) {
+                var states = d3.keys(data[0]).filter(function(key) {
+                  return key !== "Year";
+                });
+                data.forEach(function(d) {
+                  d.state = states.map(function(name) {
+                    return {
+                      name: name,
+                      value: +d[name]
+                    };
+                  });
+                });
+                var keys = data.columns.slice(1);
+
+                console.log('keys');
+                console.log(keys);
+                x0.domain(data.map(function(d) {
+                  return d.Year;
+                }));
+                x1.domain(keys).rangeRound([0, x0.bandwidth()]);
+                y.domain([0, d3.max(data, function(d) {
+                  return d3.max(d.state, function(d) {
+                    return d.value;
+                  });
+                })]).nice();
+
+                var CSVPromise = d3.csv("group.csv");
+
+                Promise.all = (CSVPromise)
+                  .then(([data]) => {
+                    g.append("g")
+                      .selectAll("g")
+                      .data(data)
+                      .enter().append("g")
+                      .attr("class", "bar")
+                      .attr("transform", function(d) {
+                        return "translate(" + x0(d.Year) + ",0)";
+                      })
+                      .selectAll("rect")
+                      .data(function(d) {
+                        return keys.map(function(key) {
+                          return {
+                            key: key,
+                            value: d[key]
+                          };
+                        });
+                      })
+                      .enter().append("rect")
+                      .attr("x", function(d) {
+                        return x1(d.key);
+                      })
+                      .attr("y", function(d) {
+                        return y(d.value);
+                      })
+                      .attr("width", x1.bandwidth())
+                      .attr("height", function(d) {
+                        return height - y(d.value);
+                      })
+                      .attr("fill", function(d) {
+                        return color(d.key);
+                      });
 
 
-        //Proportional Symbol Chart
-        var symbolData = [{
-            "Driver": "Commodity Driven",
-            "Amount": "36.41 Mha",
-            "x": 0,
-            "y": 17.95,
-            "w": 364.1,
-            "color": "#0E402D"
-          },
-          {
-            "Driver": "Shifting Agriculture",
-            "Amount": "11.09 Mha",
-            "x": 384.1,
-            "y": 144.55,
-            "w": 110.9,
-            "color": "#477998"
-          },
-          {
-            "Driver": "Forestry",
-            "Amount": "5.98 Mha",
-            "x": 515,
-            "y": 170.1,
-            "w": 59.0,
-            "color": "#F6474D"
-          },
-          {
-            "Driver": "Others",
-            "Amount": "0.38 Mha",
-            "x": 594.8,
-            "y": 198.1,
-            "w": 3.8,
-            "color": "#A3333D"
-          }
-        ];
+                    g.append("g")
+                      .attr("class", "axis")
+                      .attr("transform", "translate(0," + height + ")")
+                      .call(d3.axisBottom(x0));
 
-        const symbol = d3.select("#symbol-chart")
-          .append("svg")
-          .attr("width", 800)
-          .attr("height", 400);
+                    g.append("g")
+                      .attr("class", "y axis")
+                      .call(d3.axisLeft(y))
+                      .append("text")
+                      .attr("x", 5)
+                      .attr("y", y(y.ticks().pop()) + 1)
+                      .attr("dy", "0.50em")
+                      .attr("fill", "#000")
+                      .attr("font-weight", "bold")
+                      .attr("text-anchor", "start")
+                      .text("Tree Loss Cover");
+                  });
 
-        var squares = symbol.selectAll("rect")
-          .data(symbolData)
-          .enter()
-          .append("rect");
+                var legend = g.append("g")
+                  .attr("font-family", "sans-serif")
+                  .attr("font-size", 12)
+                  .attr("text-anchor", "end")
+                  .selectAll("g")
+                  .data(keys.slice().reverse())
+                  .enter().append("g")
+                  .attr("transform", function(d, i) {
+                    return "translate(0," + i * 20 + ")";
+                  });
 
-        var squareAttributes = squares
-          .attr("x", function(d) {
-            return d.x;
-          })
-          .attr("y", function(d) {
-            return d.y;
-          })
-          .attr("width", function(d) {
-            return d.w;
-          })
-          .attr("height", function(d) {
-            return d.w;
-          })
-          .style("fill", function(d) {
-            return d.color;
+                legend.append("rect")
+                  .attr("x", width)
+                  .attr("width", 15)
+                  .attr("height", 15)
+                  .attr("fill", color)
+                  .attr("stroke", color)
+                  .attr("stroke-width", 2)
+                  .on("click", function(d) {
+                    update(d)
+                  });
+
+                legend.append("text")
+                  .attr("x", width - 14)
+                  .attr("y", 10)
+                  .attr("dy", "0.32em")
+                  .text(function(d) {
+                    return d;
+                  });
+              });
+
+
+              //Proportional Symbol Chart
+              var symbolData = [{
+                  "Driver": "Commodity Driven",
+                  "Amount": "36.41 Mha",
+                  "x": 0,
+                  "y": 17.95,
+                  "w": 364.1,
+                  "color": "#0E402D"
+                },
+                {
+                  "Driver": "Shifting Agriculture",
+                  "Amount": "11.09 Mha",
+                  "x": 384.1,
+                  "y": 144.55,
+                  "w": 110.9,
+                  "color": "#477998"
+                },
+                {
+                  "Driver": "Forestry",
+                  "Amount": "5.98 Mha",
+                  "x": 515,
+                  "y": 170.1,
+                  "w": 59.0,
+                  "color": "#F6474D"
+                },
+                {
+                  "Driver": "Others",
+                  "Amount": "0.38 Mha",
+                  "x": 594.8,
+                  "y": 198.1,
+                  "w": 3.8,
+                  "color": "#A3333D"
+                }
+              ];
+
+              const symbol = d3.select("#symbol-chart")
+                .append("svg")
+                .attr("width", 800)
+                .attr("height", 400);
+
+              var squares = symbol.selectAll("rect")
+                .data(symbolData)
+                .enter()
+                .append("rect");
+
+              var squareAttributes = squares
+                .attr("x", function(d) {
+                  return d.x;
+                })
+                .attr("y", function(d) {
+                  return d.y;
+                })
+                .attr("width", function(d) {
+                  return d.w;
+                })
+                .attr("height", function(d) {
+                  return d.w;
+                })
+                .style("fill", function(d) {
+                  return d.color;
+                });
+
+              symbol.append("text")
+                .text("Commodity Driven:")
+                .attr("x", 182.05)
+                .attr("y", 182.05)
+                .attr("text-anchor", "middle")
+                .attr("font-family", "sans-serif")
+                .attr("font-size", "25px")
+                .attr("fill", "white");
+
+              symbol.append("text")
+                .text("36.41 Mha")
+                .attr("x", 182.05)
+                .attr("y", 208.05)
+                .attr("text-anchor", "middle")
+                .attr("font-family", "sans-serif")
+                .attr("font-size", "25px")
+                .attr("fill", "white");
+
+              symbol.append("text")
+                .text("Shifting Agriculture:")
+                .attr("x", 439.55)
+                .attr("y", 120)
+                .attr("text-anchor", "middle")
+                .attr("font-family", "sans-serif")
+                .attr("font-size", "17px")
+                .attr("fill", "black");
+
+              symbol.append("text")
+                .text("11.09 Mha")
+                .attr("x", 439.55)
+                .attr("y", 137)
+                .attr("text-anchor", "middle")
+                .attr("font-family", "sans-serif")
+                .attr("font-size", "17px")
+                .attr("fill", "black");
+
+              symbol.append("text")
+                .text("Forestry:")
+                .attr("x", 544.5)
+                .attr("y", 150)
+                .attr("text-anchor", "middle")
+                .attr("font-family", "sans-serif")
+                .attr("font-size", "17px")
+                .attr("fill", "black");
+
+              symbol.append("text")
+                .text("5.98 Mha")
+                .attr("x", 544.5)
+                .attr("y", 165)
+                .attr("text-anchor", "middle")
+                .attr("font-family", "sans-serif")
+                .attr("font-size", "17px")
+                .attr("fill", "black");
+
+              symbol.append("text")
+                .text("Others*")
+                .attr("x", 630)
+                .attr("y", 178)
+                .attr("text-anchor", "middle")
+                .attr("font-family", "sans-serif")
+                .attr("font-size", "17px")
+                .attr("fill", "black");
+
+              symbol.append("text")
+                .text("0.38 Mha")
+                .attr("x", 630)
+                .attr("y", 193)
+                .attr("text-anchor", "middle")
+                .attr("font-family", "sans-serif")
+                .attr("font-size", "17px")
+                .attr("fill", "black");
+
+              //Dual Axis Line Chart
+
+              // set dimensions and margins of the graph
+              var margin = {
+                  top: 20,
+                  right: 40,
+                  bottom: 30,
+                  left: 50
+                },
+                width = 960 - margin.left - margin.right,
+                height = 500 - margin.top - margin.bottom;
+
+
+              // set x and y range
+              var x = d3.scaleLinear().rangeRound([0, width]);
+              var y1 = d3.scaleLinear().range([height, 0]);
+              var y2 = d3.scaleLinear().range([height, 0]);
+
+              // define line1
+              var vline1 = d3.line()
+                .x(function(d) {
+                  return x(d.Year);
+                })
+                .y(function(d) {
+                  return y1(d.TCL);
+                });
+
+              // define line2
+              var vline2 = d3.line()
+                .x(function(d) {
+                  return x(d.Year);
+                })
+                .y(function(d) {
+                  return y2(d.CO2);
+                });
+
+              var DuaLine = d3.select("line-chart")
+                .append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform",
+                  "translate(" + margin.left + "," + margin.top + ")");
+              // Parse data
+              d3.csv("dual_line.csv", function(error, data) {
+                if (error) throw error;
+
+                // format the data
+                data.forEach(function(d) {
+                  d.Year = parseInt(d.Year);
+                  d.close = +d.TCL;
+                  parseInt
+                  d.open = +d.CO2;
+                });
+
+                // Scale the range of the data
+                x.domain(d3.extent(data, function(d) {
+                  return d.Year;
+                }));
+                y1.domain([0, d3.max(data, function(d) {
+                  return Math.max(d.TCL);
+                })]);
+                y2.domain([0, d3.max(data, function(d) {
+                  return Math.max(d.CO2);
+                })]);
+
+                // Add the line path 1.
+                svg.append("path")
+                  .data([data])
+                  .attr("class", "line")
+                  .attr("d", vline1);
+
+                // Add the line path 2.
+                svg.append("path")
+                  .data([data])
+                  .attr("class", "line")
+                  .style("stroke", "green")
+                  .attr("d", vline2);
+
+                // Add the X Axis
+                svg.append("g")
+                  .attr("transform", "translate(0," + height + ")")
+                  .call(d3.axisBottom(x));
+
+                // Add the Y1 Axis
+                svg.append("g")
+                  .attr("class", "axisLightGreen")
+                  .call(d3.axisLeft(y1));
+
+                // Add the Y2 Axis
+                svg.append("g")
+                  .attr("class", "axisDarkGreen")
+                  .attr("transform", "translate( " + width + ", 0 )")
+                  .call(d3.axisRight(y2));
+
+
+                .attr("fill", color)
+                  .attr("stroke", color)
+                  .attr("stroke-width", 2)
+                  .on("click", function(d) {
+                    update(d)
+                  });
+
+                legend.append("text")
+                  .attr("x", width - 14)
+                  .attr("y", 10)
+                  .attr("dy", "0.32em")
+                  .text(function(d) {
+                    return d;
+                  });
+              });
           });
-
-        symbol.append("text")
-          .text("Commodity Driven:")
-          .attr("x", 182.05)
-          .attr("y", 182.05)
-          .attr("text-anchor", "middle")
-          .attr("font-family", "sans-serif")
-          .attr("font-size", "25px")
-          .attr("fill", "white");
-
-        symbol.append("text")
-          .text("36.41 Mha")
-          .attr("x", 182.05)
-          .attr("y", 208.05)
-          .attr("text-anchor", "middle")
-          .attr("font-family", "sans-serif")
-          .attr("font-size", "25px")
-          .attr("fill", "white");
-
-        symbol.append("text")
-          .text("Shifting Agriculture:")
-          .attr("x", 439.55)
-          .attr("y", 120)
-          .attr("text-anchor", "middle")
-          .attr("font-family", "sans-serif")
-          .attr("font-size", "17px")
-          .attr("fill", "black");
-
-        symbol.append("text")
-          .text("11.09 Mha")
-          .attr("x", 439.55)
-          .attr("y", 137)
-          .attr("text-anchor", "middle")
-          .attr("font-family", "sans-serif")
-          .attr("font-size", "17px")
-          .attr("fill", "black");
-
-        symbol.append("text")
-          .text("Forestry:")
-          .attr("x", 544.5)
-          .attr("y", 150)
-          .attr("text-anchor", "middle")
-          .attr("font-family", "sans-serif")
-          .attr("font-size", "17px")
-          .attr("fill", "black");
-
-        symbol.append("text")
-          .text("5.98 Mha")
-          .attr("x", 544.5)
-          .attr("y", 165)
-          .attr("text-anchor", "middle")
-          .attr("font-family", "sans-serif")
-          .attr("font-size", "17px")
-          .attr("fill", "black");
-
-        symbol.append("text")
-          .text("Others*")
-          .attr("x", 630)
-          .attr("y", 178)
-          .attr("text-anchor", "middle")
-          .attr("font-family", "sans-serif")
-          .attr("font-size", "17px")
-          .attr("fill", "black");
-
-        symbol.append("text")
-          .text("0.38 Mha")
-          .attr("x", 630)
-          .attr("y", 193)
-          .attr("text-anchor", "middle")
-          .attr("font-family", "sans-serif")
-          .attr("font-size", "17px")
-          .attr("fill", "black");
-
-        //Dual Axis Line Chart
-
-        // set dimensions and margins of the graph
-        var margin = {
-            top: 20,
-            right: 40,
-            bottom: 30,
-            left: 50
-          },
-          width = 960 - margin.left - margin.right,
-          height = 500 - margin.top - margin.bottom;
+                  
 
 
-        // set x and y range
-        var x = d3.scaleLinear().rangeRound([0, width]);
-        var y1 = d3.scaleLinear().range([height, 0]);
-        var y2 = d3.scaleLinear().range([height, 0]);
+              //Proportional Symbol Chart
+              var symbolData = [{
+                  "Driver": "Commodity Driven",
+                  "Amount": "36.41 Mha",
+                  "x": 0,
+                  "y": 17.95,
+                  "w": 364.1,
+                  "color": "#0E402D"
+                },
+                {
+                  "Driver": "Shifting Agriculture",
+                  "Amount": "11.09 Mha",
+                  "x": 384.1,
+                  "y": 144.55,
+                  "w": 110.9,
+                  "color": "#477998"
+                },
+                {
+                  "Driver": "Forestry",
+                  "Amount": "5.98 Mha",
+                  "x": 515,
+                  "y": 170.1,
+                  "w": 59.0,
+                  "color": "#F6474D"
+                },
+                {
+                  "Driver": "Others",
+                  "Amount": "0.38 Mha",
+                  "x": 594.8,
+                  "y": 198.1,
+                  "w": 3.8,
+                  "color": "#A3333D"
+                }
+              ];
 
-        // define line1
-        var vline1 = d3.line()
-          .x(function(d) {
-            return x(d.Year);
-          })
-          .y(function(d) {
-            return y1(d.TCL);
-          });
+              const symbol = d3.select("#symbol-chart")
+                .append("svg")
+                .attr("width", 800)
+                .attr("height", 400);
 
-        // define line2
-        var vline2 = d3.line()
-          .x(function(d) {
-            return x(d.Year);
-          })
-          .y(function(d) {
-            return y2(d.CO2);
-          });
+              var squares = symbol.selectAll("rect")
+                .data(symbolData)
+                .enter()
+                .append("rect");
 
-        var DuaLine = d3.select("line-chart")
-          .append("svg")
-          .attr("width", width + margin.left + margin.right)
-          .attr("height", height + margin.top + margin.bottom)
-          .append("g")
-          .attr("transform",
-            "translate(" + margin.left + "," + margin.top + ")");
-        // Parse data
-        d3.csv("dual_line.csv", function(error, data) {
-          if (error) throw error;
+              var squareAttributes = squares
+                .attr("x", function(d) {
+                  return d.x;
+                })
+                .attr("y", function(d) {
+                  return d.y;
+                })
+                .attr("width", function(d) {
+                  return d.w;
+                })
+                .attr("height", function(d) {
+                  return d.w;
+                })
+                .style("fill", function(d) {
+                  return d.color;
+                });
 
-          // format the data
-          data.forEach(function(d) {
-            d.Year = parseInt(d.Year);
-            d.close = +d.TCL;
-            parseInt
-            d.open = +d.CO2;
-          });
+              symbol.append("text")
+                .text("Commodity Driven:")
+                .attr("x", 182.05)
+                .attr("y", 182.05)
+                .attr("text-anchor", "middle")
+                .attr("font-family", "sans-serif")
+                .attr("font-size", "25px")
+                .attr("fill", "white");
 
-          // Scale the range of the data
-          x.domain(d3.extent(data, function(d) {
-            return d.Year;
-          }));
-          y1.domain([0, d3.max(data, function(d) {
-            return Math.max(d.TCL);
-          })]);
-          y2.domain([0, d3.max(data, function(d) {
-            return Math.max(d.CO2);
-          })]);
+              symbol.append("text")
+                .text("36.41 Mha")
+                .attr("x", 182.05)
+                .attr("y", 208.05)
+                .attr("text-anchor", "middle")
+                .attr("font-family", "sans-serif")
+                .attr("font-size", "25px")
+                .attr("fill", "white");
 
-          // Add the line path 1.
-          svg.append("path")
-            .data([data])
-            .attr("class", "line")
-            .attr("d", vline1);
+              symbol.append("text")
+                .text("Shifting Agriculture:")
+                .attr("x", 439.55)
+                .attr("y", 120)
+                .attr("text-anchor", "middle")
+                .attr("font-family", "sans-serif")
+                .attr("font-size", "17px")
+                .attr("fill", "black");
 
-          // Add the line path 2.
-          svg.append("path")
-            .data([data])
-            .attr("class", "line")
-            .style("stroke", "green")
-            .attr("d", vline2);
+              symbol.append("text")
+                .text("11.09 Mha")
+                .attr("x", 439.55)
+                .attr("y", 137)
+                .attr("text-anchor", "middle")
+                .attr("font-family", "sans-serif")
+                .attr("font-size", "17px")
+                .attr("fill", "black");
 
-          // Add the X Axis
-          svg.append("g")
-            .attr("transform", "translate(0," + height + ")")
-            .call(d3.axisBottom(x));
+              symbol.append("text")
+                .text("Forestry:")
+                .attr("x", 544.5)
+                .attr("y", 150)
+                .attr("text-anchor", "middle")
+                .attr("font-family", "sans-serif")
+                .attr("font-size", "17px")
+                .attr("fill", "black");
 
-          // Add the Y1 Axis
-          svg.append("g")
-            .attr("class", "axisLightGreen")
-            .call(d3.axisLeft(y1));
+              symbol.append("text")
+                .text("5.98 Mha")
+                .attr("x", 544.5)
+                .attr("y", 165)
+                .attr("text-anchor", "middle")
+                .attr("font-family", "sans-serif")
+                .attr("font-size", "17px")
+                .attr("fill", "black");
 
-          // Add the Y2 Axis
-          svg.append("g")
-            .attr("class", "axisDarkGreen")
-            .attr("transform", "translate( " + width + ", 0 )")
-            .call(d3.axisRight(y2));
-        });
+              symbol.append("text")
+                .text("Others*")
+                .attr("x", 630)
+                .attr("y", 178)
+                .attr("text-anchor", "middle")
+                .attr("font-family", "sans-serif")
+                .attr("font-size", "17px")
+                .attr("fill", "black");
+
+              symbol.append("text")
+                .text("0.38 Mha")
+                .attr("x", 630)
+                .attr("y", 193)
+                .attr("text-anchor", "middle")
+                .attr("font-family", "sans-serif")
+                .attr("font-size", "17px")
+                .attr("fill", "black");
+
+              //Dual Axis Line Chart
+
+              // set dimensions and margins of the graph
+              var margin = {
+                  top: 20,
+                  right: 40,
+                  bottom: 30,
+                  left: 50
+                },
+                width = 960 - margin.left - margin.right,
+                height = 500 - margin.top - margin.bottom;
+
+
+              // set x and y range
+              var x = d3.scaleLinear().rangeRound([0, width]);
+              var y1 = d3.scaleLinear().range([height, 0]);
+              var y2 = d3.scaleLinear().range([height, 0]);
+
+              // define line1
+              var vline1 = d3.line()
+                .x(function(d) {
+                  return x(d.Year);
+                })
+                .y(function(d) {
+                  return y1(d.TCL);
+                });
+
+              // define line2
+              var vline2 = d3.line()
+                .x(function(d) {
+                  return x(d.Year);
+                })
+                .y(function(d) {
+                  return y2(d.CO2);
+                });
+
+              var DuaLine = d3.select("#line-chart")
+                .append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform",
+                  "translate(" + margin.left + "," + margin.top + ")");
+              // Parse data
+              d3.csv("dual_line.csv", function(error, data) {
+                if (error) throw error;
+
+                // format the data
+                data.forEach(function(d) {
+                  d.Year = parseInt(d.Year);
+                  d.close = +d.TCL;
+                  parseInt
+                  d.open = +d.CO2;
+                });
+
+                // Scale the range of the data
+                x.domain(d3.extent(data, function(d) {
+                  return d.Year;
+                }));
+                y1.domain([0, d3.max(data, function(d) {
+                  return Math.max(d.TCL);
+                })]);
+                y2.domain([0, d3.max(data, function(d) {
+                  return Math.max(d.CO2);
+                })]);
+
+                // Add the line path 1.
+                svg.append("path")
+                  .data([data])
+                  .attr("class", "line")
+                  .attr("d", vline1);
+
+                // Add the line path 2.
+                svg.append("path")
+                  .data([data])
+                  .attr("class", "line")
+                  .style("stroke", "green")
+                  .attr("d", vline2);
+
+                // Add the X Axis
+                svg.append("g")
+                  .attr("transform", "translate(0," + height + ")")
+                  .call(d3.axisBottom(x));
+
+                // Add the Y1 Axis
+                svg.append("g")
+                  .attr("class", "axisLightGreen")
+                  .call(d3.axisLeft(y1));
+
+                // Add the Y2 Axis
+                svg.append("g")
+                  .attr("class", "axisDarkGreen")
+                  .attr("transform", "translate( " + width + ", 0 )")
+                  .call(d3.axisRight(y2));
+              });
+            }; >>>
+            >>> > f8a3b7b117892305b622c687ae021ffe7870cf24
 
   </script>
 

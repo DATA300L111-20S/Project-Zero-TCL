@@ -16,6 +16,10 @@ header {
   text-align: center;
 }
 
+main {
+  display: flex;
+}
+
 div.tooltip {
   color: white;
   position: absolute;

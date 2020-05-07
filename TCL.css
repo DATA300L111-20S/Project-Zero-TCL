@@ -1,6 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Jost:wght@300&display=swap");
 
-
 html {
   font-size: 100%;
   font-family: "Jost", sans-serif;
@@ -17,6 +16,10 @@ header {
   text-align: center;
 }
 
+main {
+  display: flex;
+}
+
 div.tooltip {
   color: white;
   position: absolute;
@@ -30,10 +33,17 @@ div.tooltip {
   pointer-events: none;
 }
 
-.details {
-  color: white
-}
+legend ( {
+    color: d3.scaleSequentialQuantile(Array.from( {
+          length: 100
+        }
 
+        , ()=> Math.random() ** 2), d3.schemeGreens),
+    title: "Percentage of Tree Cover Loss",
+    tickFormat: ".2f"
+  }
+
+)
 /* Dual Line CSS code */
 
 .line {

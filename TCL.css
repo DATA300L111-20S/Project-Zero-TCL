@@ -39,10 +39,7 @@ legend ( {
     tickFormat: ".2f"
   }
 
-) .details {
-  color: white
-}
-
+)
 /* Dual Line CSS code */
 
 .line {

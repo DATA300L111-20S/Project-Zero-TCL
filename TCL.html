@@ -50,6 +50,23 @@
 
       Promise.all([csvPromise, jsonPromise])
         .then(([data, topo]) => {
+
+          for (let i = 0; i < topo.features.length; i++) {
+            const topoProp = topo.features[i].properties;
+
+            for (let j = 0; j < data.length; j++) {
+
+              //Find where state in geoJson matches state in Csv
+
+              if (topoProp.name === data[j].state) {
+                //Add a new percentage property to the topo data by copying % from csv data.
+                topoProp.percentage = data[j].percentage;
+              }
+            }
+          }
+
+          console.log(topo.features);
+
           brazilMap.append("g")
             .selectAll("path")
             .data(topo.features)
@@ -84,12 +101,13 @@
             //Adding the tooltip
             .style('cursor', 'pointer')
             .on('mouseover', d => {
+              const state = d.properties.name;
               div
                 .transition()
                 .duration(200)
                 .style('opacity', 0.9);
               div
-                .html(csvPromise(d.state) + ": " + csvPromise(d.percentage) + " Mha")
+                .html(state + ": " + d.properties.percentage + "%")
                 .style('left', d3.event.pageX + 'px')
                 .style('top', d3.event.pageY - 28 + 'px');
             })
@@ -102,66 +120,31 @@
         });
 
       //Legend function for choropleth map
-      function buildLegend() {
+      function makeLegend() {
+
+        const yScale = d3.scaleBand()
+          .domain(colorScale.range())
+          .range([height / 2, 0])
+          .paddingOuter(1);
+
         const legend = brazilMap.append("g")
-          .attr("id", "legend")
-          .attr("transform", "translate(450," + (height - 400) + ")");
-        legend.append("text").text("0%")
-          .attr("x", 75)
-          .attr("y", 0)
-          .attr("alignment-baseline", "middle");
-        legend.append("text").text("22%+")
-          .attr("x", 75)
-          .attr("y", 210)
-          .attr("alingment-baseline", "middle");
-        legend.append("rect")
-          .attr("x", 50)
-          .attr("height", 210)
-          .attr("width", 20)
-          .style("fill", d3.schemesGreens);
+          .attr("class", "legend")
+          .attr("transform", "translate(" + (width - 40) + ",0)")
+
+        legend.selectAll("rect")
+          .data(coloScale.range())
+          .enter()
+          .append("rect")
+          .attr("x", 4)
+          .attr("y", d => yScale.bandwidth())
+          .style("fill", d => d)
+
+        legend.selectAll("text")
+          .data([6, 13, 19])
+
       }
 
-      const mapColor = d3.schemesGreens;
 
-      function initializeGradients() {
-        const svgDefs = brazilMap.append("defs");
-
-        const seqGradient = svgDefs.append("linearGradient")
-          .attr("id", "seqScale")
-          .attr("x1", "0%")
-          .attr("y1", "0%")
-          .attr("x2", "100%")
-          .attr("y2", "0%")
-        seqGradient.append("stop")
-          .attr("offset", "0%")
-          .attr("style", "stop-color:" + mapColor(0) + ";stop-opacity:1");
-        seqGradient.append("stop")
-          .attr("offset", "50%")
-          .attr("style", "stop-color:" + mapColor(25) + ";stop-opacity:1");
-        seqGradient.append("stop")
-          .attr("offset", "100%")
-          .attr("style", "stop-color:" + mapColor(50) + ";stop-opacity:1");
-
-        const divGradient = svgDefs.append("linearGradient")
-          .attr("id", "divScale")
-          .attr("x1", "0%")
-          .attr("y1", "0%")
-          .attr("x2", "100%")
-          .attr("y2", "0%")
-        divGradient.append("stop")
-          .attr("offset", "0%")
-          .attr("style", "stop-color:" + hiLoColor(0) + ";stop-opacity:1");
-        divGradient.append("stop")
-          .attr("offset", "28%")
-          .attr("style", "stop-color:" + hiLoColor(14) + ";stop-opacity:1");
-        divGradient.append("stop")
-          .attr("offset", "100%")
-          .attr("style", "stop-color:" + hiLoColor(50) + ";stop-opacity:1");
-      }
-
-      initializeGradients();
-
-      buildLegend();
 
       // Grouped Bar Chart
       var GroupBar = d3.select("#bar-chart"),
@@ -670,6 +653,7 @@
         });
       });
     };
+
   </script>
 
 </head>
@@ -714,4 +698,6 @@
 
   </footer>
 
-</body></html>
+</body>
+
+</html>

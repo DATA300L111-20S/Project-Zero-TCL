@@ -20,7 +20,7 @@
       //Choropleth Map
       const brazilMap = d3.select("#choropleth-map")
         .append("svg")
-        .attr("width", 700)
+        .attr("width", 750)
         .attr("height", 500);
 
       var width = +brazilMap.attr("width");
@@ -29,7 +29,7 @@
       var path = d3.geoPath();
       var projection = d3.geoMercator()
         .scale(650)
-        .center([-50, -15])
+        .center([-44, -15])
         .translate([width / 2, height / 2]);
 
       // Data and color scale
@@ -83,23 +83,61 @@
       function buildLegend() {
         const legend = brazilMap.append("g")
           .attr("id", "legend")
-          .attr("transform", "translate(40," + (height - 80) + ")");
-
+          .attr("transform", "translate(450," + (height - 400) + ")");
         legend.append("text").text("0%")
-          .attr("y", 16);
-        legend.append("text").text("50%")
-          .attr("x", 250)
-          .attr("y", 16);
-        legend.append("text").text("Percentage of TCL")
-          .attr("text-anchor", "middle")
-          .attr("x", 140)
-          .attr("y", 40);
+          .attr("x", 75)
+          .attr("y", 0)
+          .attr("alignment-baseline", "middle");
+        legend.append("text").text("22%+")
+          .attr("x", 75)
+          .attr("y", 210)
+          .attr("alingment-baseline", "middle");
         legend.append("rect")
-          .attr("x", 40)
-          .attr("height", 20)
-          .attr("width", 200)
+          .attr("x", 50)
+          .attr("height", 210)
+          .attr("width", 20)
           .style("fill", d3.schemesGreens);
       }
+
+      const mapColor = d3.schemesGreens;
+
+      function initializeGradients() {
+        const svgDefs = brazilMap.append("defs");
+
+        const seqGradient = svgDefs.append("linearGradient")
+          .attr("id", "seqScale")
+          .attr("x1", "0%")
+          .attr("y1", "0%")
+          .attr("x2", "100%")
+          .attr("y2", "0%")
+        seqGradient.append("stop")
+          .attr("offset", "0%")
+          .attr("style", "stop-color:" + mapColor(0) + ";stop-opacity:1");
+        seqGradient.append("stop")
+          .attr("offset", "50%")
+          .attr("style", "stop-color:" + mapColor(25) + ";stop-opacity:1");
+        seqGradient.append("stop")
+          .attr("offset", "100%")
+          .attr("style", "stop-color:" + mapColor(50) + ";stop-opacity:1");
+
+        const divGradient = svgDefs.append("linearGradient")
+          .attr("id", "divScale")
+          .attr("x1", "0%")
+          .attr("y1", "0%")
+          .attr("x2", "100%")
+          .attr("y2", "0%")
+        divGradient.append("stop")
+          .attr("offset", "0%")
+          .attr("style", "stop-color:" + hiLoColor(0) + ";stop-opacity:1");
+        divGradient.append("stop")
+          .attr("offset", "28%")
+          .attr("style", "stop-color:" + hiLoColor(14) + ";stop-opacity:1");
+        divGradient.append("stop")
+          .attr("offset", "100%")
+          .attr("style", "stop-color:" + hiLoColor(50) + ";stop-opacity:1");
+      }
+
+      initializeGradients();
 
       buildLegend();
 

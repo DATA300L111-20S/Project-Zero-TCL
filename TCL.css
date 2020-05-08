@@ -41,8 +41,9 @@ div.tooltip {
   color: white;
   position: absolute;
   text-align: center;
-  width: 80px;
-  height: 50px;
+  align-content: center;
+  width: 100px;
+  height: 40px;
   padding: 2px;
   font: 12 px sans-serif;
   background: rgba(0, 0, 0, 0.8);

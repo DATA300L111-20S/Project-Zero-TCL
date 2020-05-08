@@ -41,8 +41,10 @@
         .attr('class', 'tooltip')
         .style('opacity', 0);
 
+      var thresholds = [6, 13, 19]
+
       var colorScale = d3.scaleThreshold()
-        .domain([6, 13, 19])
+        .domain(thresholds)
         .range(d3.schemeGreens[4]);
 
       const csvPromise = d3.csv("tcl.csv");
@@ -64,8 +66,6 @@
               }
             }
           }
-
-          console.log(topo.features);
 
           brazilMap.append("g")
             .selectAll("path")
@@ -129,22 +129,28 @@
 
         const legend = brazilMap.append("g")
           .attr("class", "legend")
-          .attr("transform", "translate(" + (width - 40) + ",0)")
+          .attr("transform", "translate(" + width - 40 + ",0)")
 
         legend.selectAll("rect")
-          .data(coloScale.range())
+          .data(colorScale.range())
           .enter()
           .append("rect")
           .attr("x", 4)
-          .attr("y", d => yScale.bandwidth())
-          .style("fill", d => d)
+          .attr("y", d => yScale(d))
+          .attr("width", 10)
+          .attr("height", yScale.bandwidth())
+          .style("fill", d => d);
 
         legend.selectAll("text")
-          .data([6, 13, 19])
+          .data(thresholds)
+          .enter()
+          .append("text")
+          .attr("y", (d, i) => yScale(colorScale[i]))
+        //.text(d => )
 
       }
 
-
+      makeLegend()
 
       // Grouped Bar Chart
       var GroupBar = d3.select("#bar-chart"),

@@ -141,16 +141,9 @@
           .attr("height", yScale.bandwidth())
           .style("fill", d => d);
 
-        legend.selectAll("text")
-          .data(thresholds)
-          .enter()
-          .append("text")
-          .attr("y", (d, i) => yScale(colorScale[i]))
-          .text(d => thresholds[d]);
-
         legend.append("text")
           .attr("x", 500)
-          .attr("y", (height - yScale.bandwidth()))
+          .attr("y", height - yScale.bandwidth())
           .text("0%");
 
         legend.append("text")

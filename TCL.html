@@ -124,7 +124,7 @@
 
         const yScale = d3.scaleBand()
           .domain(colorScale.range())
-          .range([height / 2, 0])
+          .range([height / 2, 5])
           .paddingOuter(1);
 
         const legend = brazilMap.append("g")
@@ -135,7 +135,7 @@
           .data(colorScale.range())
           .enter()
           .append("rect")
-          .attr("x", 4)
+          .attr("x", 500)
           .attr("y", d => yScale(d))
           .attr("width", 10)
           .attr("height", yScale.bandwidth())
@@ -146,8 +146,17 @@
           .enter()
           .append("text")
           .attr("y", (d, i) => yScale(colorScale[i]))
-        //.text(d => )
+          .text(d => thresholds[d]);
 
+        legend.append("text")
+          .attr("x", 500)
+          .attr("y", (height - yScale.bandwidth()))
+          .text("0%");
+
+        legend.append("text")
+          .attr("x", 500)
+          .attr("y", yScale.bandwidth())
+          .text("22%+");
       }
 
       makeLegend()
@@ -659,7 +668,6 @@
         });
       });
     };
-
   </script>
 
 </head>
@@ -704,6 +712,4 @@
 
   </footer>
 
-</body>
-
-</html>
+</body></html>

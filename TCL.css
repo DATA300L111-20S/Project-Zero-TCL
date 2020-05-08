@@ -24,24 +24,14 @@ div.tooltip {
   color: white;
   position: absolute;
   text-align: center;
-  width: 60px;
-  height: 28px;
+  width: 80px;
+  height: 50px;
   padding: 2px;
   font: 12 px sans-serif;
   background: rgba(0, 0, 0, 0.8);
   border: 2px solid black;
   pointer-events: none;
 }
-
-legend ( {
-    color: d3.scaleSequentialQuantile(Array.from( {
-          length: 100
-        }
-
-        , ()=> Math.random() ** 2), d3.schemeGreens),
-    title: "Percentage of Tree Cover Loss",
-    tickFormat: ".2f"
-  }
 
 )
 /* Dual Line CSS code */

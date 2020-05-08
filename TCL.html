@@ -68,6 +68,17 @@
               const percent = stateData[0]["percentage"];
               return colorScale(percent);
             })
+            //Adding mouseover
+            .on('mouseover', function(d, i) {
+              d3.select(this).transition()
+                .duration('50')
+                .attr('opacity', '.85');
+            })
+            .on('mouseout', function(d, i) {
+              d3.select(this).transition()
+                .duration('50')
+                .attr('opacity', '1')
+            })
 
             //Adding the tooltip
             .style('cursor', 'pointer')

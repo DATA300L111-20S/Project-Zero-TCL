@@ -38,6 +38,7 @@ main > figure {
 }
 
 div.tooltip {
+<<<<<<< HEAD
 	color: white;
 	position: absolute;
 	text-align: center;
@@ -48,6 +49,19 @@ div.tooltip {
 	background: rgba(0, 0, 0, 0.8);
 	border: 2px solid black;
 	pointer-events: none;
+=======
+  color: white;
+  position: absolute;
+  text-align: center;
+  align-content: center;
+  width: 100px;
+  height: 40px;
+  padding: 2px;
+  font: 12 px sans-serif;
+  background: rgba(0, 0, 0, 0.8);
+  border: 2px solid black;
+  pointer-events: none;
+>>>>>>> 2123eff02a6f68819ba29718fc9fc32899bbc20e
 }
 
 )

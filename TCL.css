@@ -1,69 +1,69 @@
 @import url("https://fonts.googleapis.com/css2?family=Jost:wght@300&display=swap");
 
 html {
-  font-size: 100%;
-  font-family: "Jost", sans-serif;
-  background-color: ghostwhite;
-  overflow-y: scroll
+	font-size: 100%;
+	font-family: "Jost", sans-serif;
+	background-color: ghostwhite;
+	overflow-y: scroll
 }
 
 body {
-  padding: 0 2%;
-  margin: 0;
+	padding: 0 2%;
+	margin: 0;
 }
 
 header {
-  text-align: center;
+	text-align: center;
 }
 
 main {
-  display: flex;
+	display: flex;
 }
 
 footer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 main > section {
-  flex: 1
+	flex: 1
 }
 
 main > figure {
-  flex: 3;
-  position: relative;
-  margin-top: 0;
-  margin-bottom: 0;
+	flex: 3;
+	position: relative;
+	margin-top: 0;
+	margin-bottom: 0;
 }
 
 div.tooltip {
-  color: white;
-  position: absolute;
-  text-align: center;
-  width: 80px;
-  height: 50px;
-  padding: 2px;
-  font: 12 px sans-serif;
-  background: rgba(0, 0, 0, 0.8);
-  border: 2px solid black;
-  pointer-events: none;
+	color: white;
+	position: absolute;
+	text-align: center;
+	width: 80px;
+	height: 50px;
+	padding: 2px;
+	font: 12 px sans-serif;
+	background: rgba(0, 0, 0, 0.8);
+	border: 2px solid black;
+	pointer-events: none;
 }
 
 )
 /* Dual Line CSS code */
 
 .line {
-  fill: none;
-  stroke: #00DB00;
-  stroke-width: 4px;
+	fill: none;
+	stroke: #00DB00;
+	stroke-width: 4px;
 }
 
 .axisNavyBlue text {
-  fill: #000080;
+	stroke: #000080;
 
 }
 
 .axisMaroon text {
-  fill: #800000;
+	fill: #800000;
 }

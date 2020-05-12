@@ -41,7 +41,7 @@ div.tooltip {
   color: white;
   position: absolute;
   text-align: center;
-  width: 80px;
+  width: 90px;
   height: 50px;
   padding: 2px;
   font: 12 px sans-serif;
@@ -56,6 +56,7 @@ div.tooltip {
 .line {
   stroke: #00DB00;
   stroke-width: 4px;
+  fill: none;
 }
 
 .axisNavyBlue text {

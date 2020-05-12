@@ -124,7 +124,7 @@
 
         const yScale = d3.scaleBand()
           .domain(colorScale.range())
-          .range([height / 2, 5])
+          .range([height / 2, 3])
           .paddingOuter(1);
 
         const legend = brazilMap.append("g")
@@ -142,12 +142,27 @@
           .style("fill", d => d);
 
         legend.append("text")
-          .attr("x", 500)
-          .attr("y", height - yScale.bandwidth())
+          .attr("x", 515)
+          .attr("y", (height / 2) - yScale.bandwidth())
           .text("0%");
 
         legend.append("text")
-          .attr("x", 500)
+          .attr("x", 515)
+          .attr("y", (yScale.bandwidth() + 41))
+          .text("19%");
+
+        legend.append("text")
+          .attr("x", 515)
+          .attr("y", (yScale.bandwidth() + 82))
+          .text("13%");
+
+        legend.append("text")
+          .attr("x", 515)
+          .attr("y", (yScale.bandwidth() + 123))
+          .text("6%");
+
+        legend.append("text")
+          .attr("x", 515)
           .attr("y", yScale.bandwidth())
           .text("22%+");
       }
@@ -513,7 +528,6 @@
           .attr("class", "axisDarkGreen")
           .attr("transform", "translate( " + width + ", 0 )")
           .call(d3.axisRight(y2))
-          .attr("fill", color)
           .attr("stroke", color)
           .attr("stroke-width", 2);
 

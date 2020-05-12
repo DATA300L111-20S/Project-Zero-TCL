@@ -87,15 +87,27 @@
             })
 
             //Adding hover effect
-            .on('mouseover', function(d, i) {
-              d3.select(this).transition()
-                .duration('50')
-                .attr('opacity', '.85');
+            .on('mouseover', function(d) {
+              d3.select(d.properties.name)
+                .transition()
+                .duration('200')
+                .attr('opacity', '.5')
+              d3.select(this)
+                .transition()
+                .duration(200)
+                .style("opacity", 1)
+                .style("stroke", "black");
+
             })
-            .on('mouseout', function(d, i) {
-              d3.select(this).transition()
-                .duration('50')
-                .attr('opacity', '1')
+            .on('mouseout', function(d) {
+              d3.selectAll(d.properties.name)
+                .transition()
+                .duration('200')
+                .attr('opacity', '.8')
+              d3.select(this)
+                .transition()
+                .duration(200)
+                .style("stroke", "transparent")
             })
 
             //Adding the tooltip
@@ -533,6 +545,7 @@
 
       });
     };
+
   </script>
 
 </head>
@@ -571,4 +584,6 @@
 
   </footer>
 
-</body></html>
+</body>
+
+</html>

@@ -2,20 +2,34 @@
 <meta charset="utf-8">
 <style type="text/css">
 	rect:hover {
-		fill: orange;
+		fill: #bfe6ff;
 	}
 
-	#tooltip.hidden {
-		display: none;
+	.tooltip {
+		background: #d6ecf3;
+		border: solid;
+		border-radius: 10px;
+		font-family: $font;
+		font-size: 18px;
+		font-weight: bold;
+		height: 40px;
+		padding: 8px;
+		pointer-events: none;
+		position: absolute;
+		text-align: left;
+		width: 200px;
+	}
+
+	span {
+		color: forestgreen;
+		font-weight: bold;
 	}
 
 </style>
 
 <body>
 	<svg width="1160" height="600"></svg>
-	<div id="tooltip" class="hidden">
-		<p><strong>Tree Cover Loss (KHA)</strong></p>
-		<p><span id="value"></span></p>
+	<div id=class="chart">
 	</div>
 	<script src="http://d3js.org/d3.v4.min.js"></script>
 	<script>
@@ -30,8 +44,10 @@
 			height = +svg.attr("height") - margin.top - margin.bottom,
 			g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+		// Define States
 		var x0 = d3.scaleBand()
 			.rangeRound([0, width], .1);
+		// Define years 
 		var x1 = d3.scaleBand()
 			.padding(0.05);
 
@@ -40,6 +56,11 @@
 
 		var color = d3.scaleOrdinal()
 			.range(["#1E5631", "#728c69", "#477998", "#FFD933", "#A4DE02"]);
+
+		var tooltip = d3.select('body')
+			.append('div')
+			.attr('class', 'tooltip')
+			.style('opacity', 0);
 
 		d3.csv("group.csv", function(error, data) {
 			var states = d3.keys(data[0]).filter(function(key) {
@@ -99,28 +120,26 @@
 				.attr("fill", function(d) {
 					return color(d.key);
 				})
-				.on("mouseover", function(d) {
-					var xPosition = parseFloat(d3.select(this).attr("x")) + x1.bandwidth();
-					var yPosition = parseFloat(d3.select(this).attr("y", function(d) {
-						return y(d.value);
-					}));
-					d3.select("#tooltip")
-						.style("left", xPosition + "px")
-						.style("top", yPosition + "px")
-						.select("#value")
-						.text(d);
-					d3.select("#tooltip").classed("hidden", false);
+				.on("mouseover", (d) => {
+					tooltip.transition().duration(300).style('opacity', 1);
+					tooltip.html(`Tree Cover Loss: <span>${d.value} Kilohectares </span>`)
 				})
-				.on("mouseout", function(d) {
-					d3.select("#tooltip").classed("hidden", true);
-				});
 
+				.on("mouseout", () =>
+					tooltip.transition().duration(500).style('opacity', 0));
 
 			// Add AXES
 			g.append("g")
 				.attr("class", "axis")
 				.attr("transform", "translate(0," + height + ")")
 				.call(d3.axisBottom(x0));
+
+			g.append("text")
+				.attr("transform",
+					"translate(" + (width / 2) + " ," +
+					(height + margin.top + 10) + ")")
+				.style("text-anchor", "middle")
+				.text("Year");
 
 			g.append("g")
 				.attr("class", "y axis")
@@ -132,7 +151,7 @@
 				.attr("fill", "#000")
 				.attr("font-weight", "bold")
 				.attr("text-anchor", "start")
-				.text("Tree Loss Cover");
+				.text("Tree Cover Loss (KHA)");
 
 			var legend = g.append("g")
 				.attr("font-family", "sans-serif")

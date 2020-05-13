@@ -1,109 +1,154 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-<style> /* set the CSS */
+<style>
+	/* set the CSS */
 
-.line {
-  fill: none;
-  stroke: #00DB00;
-  stroke-width: 4px;
-}
+	.line {
+		fill: none;
+		stroke: #00DB00;
+		stroke-width: 4px;
+	}
 
-.axisLightGreen text{
-  fill: #32cd32;
-  font-weight: bold;
-  font-size: small;
-}
+	.axisLightGreen text {
+		fill: #32cd32;
+		font-weight: bold;
+		font-size: small;
+	}
 
-.axisDarkGreen text{
-  fill: green;
-  font-weight: bold;
-  font-size: small;
-}
+	.axisDarkGreen text {
+		fill: green;
+		font-weight: bold;
+		font-size: small;
+	}
 
 </style>
+
 <body>
 
-<!-- load the d3.js library -->    	
-<script src="https://d3js.org/d3.v4.min.js"></script>
-<script>
+	<!-- load the d3.js library -->
+	<script src="https://d3js.org/d3.v4.min.js"></script>
+	<script>
+		// set dimensions and margins of the graph
+		var margin = {
+				top: 20,
+				right: 40,
+				bottom: 30,
+				left: 50
+			},
+			width = 960 - margin.left - margin.right,
+			height = 500 - margin.top - margin.bottom;
 
-// set dimensions and margins of the graph
-var margin = {top: 20, right: 40, bottom: 30, left: 50},
-    width = 960 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
+
+		// set x and y range
+		var x = d3.scaleLinear().rangeRound([0, width]);
+		var y1 = d3.scaleLinear().range([height, 0]);
+		var y2 = d3.scaleLinear().range([height, 0]);
+
+		// define line1
+		var vline1 = d3.line()
+			.x(function(d) {
+				return x(d.Year);
+			})
+			.y(function(d) {
+				return y1(d.TCL);
+			});
+
+		// define line2
+		var vline2 = d3.line()
+			.x(function(d) {
+				return x(d.Year);
+			})
+			.y(function(d) {
+				return y2(d.CO2);
+			});
+
+		// append the svg obgect to the body of the page
+		// appends a 'group' element to 'svg'
+		// moves the 'group' element to the top left margin
+		var svg = d3.select("body").append("svg")
+			.attr("width", width + margin.left + margin.right)
+			.attr("height", height + margin.top + margin.bottom)
+			.append("g")
+			.attr("transform",
+				"translate(" + margin.left + "," + margin.top + ")");
+
+		// Parse data
+		d3.csv("dual_line.csv", function(error, data) {
+			if (error) throw error;
+
+			// format the data
+			data.forEach(function(d) {
+				d.Year = +d.Year;
+				d.TCL = +d.TCL;
+				d.CO2 = +d.CO2;
+			});
+
+			// Scale the range of the data
+			x.domain(d3.extent(data, function(d) {
+				return d.Year;
+			}));
+			y1.domain([0, d3.max(data, function(d) {
+				return Math.max(d.TCL);
+			})]);
+			y2.domain([0, d3.max(data, function(d) {
+				return Math.max(d.CO2);
+			})]);
+
+			// Add the line path 1.
+			svg.append("path")
+				.data([data])
+				.attr("class", "line")
+				.attr("d", vline1);
+
+			// Add the line path 2.
+			svg.append("path")
+				.data([data])
+				.attr("class", "line")
+				.style("stroke", "green")
+				.attr("d", vline2);
+
+			// Add the X Axis
+			svg.append("g")
+				.attr("transform", "translate(0," + height + ")")
+				.call(d3.axisBottom(x));
+
+			svg.append("text")
+				.attr("transform",
+					"translate(" + (width / 2) + " ," +
+					(height + margin.top + 10) + ")")
+				.style("text-anchor", "middle")
+				.text("Year");
+
+			// Add the Y1 Axis
+			svg.append("g")
+				.attr("class", "axisLightGreen")
+				.call(d3.axisLeft(y1));
+
+			svg.append("text")
+				.attr("transform", "rotate(-90)")
+				.attr("y", 0 - margin.left)
+				.attr("x", 0 - (height / 2))
+				.attr("dy", "1em")
+				.style("text-anchor", "middle")
+				.text("TCL in MHA (Million Hectare Acres)");
 
 
-// set x and y range
-var x = d3.scaleLinear().rangeRound([0, width]);
-var y1 = d3.scaleLinear().range([height, 0]);
-var y2 = d3.scaleLinear().range([height, 0]);
+			// Add the Y2 Axis
+			svg.append("g")
+				.attr("class", "axisDarkGreen")
+				.attr("transform", "translate( " + width + ", 0 )")
+				.call(d3.axisRight(y2));
 
-// define line1
-var vline1 = d3.line()
-    .x(function(d) { return x(d.Year); })
-    .y(function(d) { return y1(d.TCL); });
+			svg.append("text")
+				.attr("transform", "rotate(-180)")
+				.attr("y", 0 - margin.right)
+				.attr("x", 0 - (height / 2))
+				.attr("dy", "1em")
+				.style("text-anchor", "middle")
+				.text("CO2 Emmissions (Gt.)");
 
-// define line2
-var vline2 = d3.line()
-    .x(function(d) { return x(d.Year); })
-    .y(function(d) { return y2(d.CO2); });
 
-// append the svg obgect to the body of the page
-// appends a 'group' element to 'svg'
-// moves the 'group' element to the top left margin
-var svg = d3.select("body").append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-  .append("g")
-    .attr("transform",
-          "translate(" + margin.left + "," + margin.top + ")");
+		});
 
-// Parse data
-d3.csv("dual_line.csv", function(error, data) {
-  if (error) throw error;
-
-  // format the data
-  data.forEach(function(d) {
-     d.Year = parseInt(d.Year);
-      d.close = +d.TCL;parseInt
-      d.open = +d.CO2;
-  });
-
-  // Scale the range of the data
-  x.domain(d3.extent(data, function(d) { return d.Year; }));
-  y1.domain([0, d3.max(data, function(d) {return Math.max(d.TCL);})]);
-  y2.domain([0, d3.max(data, function(d) {return Math.max(d.CO2); })]);
-
-  // Add the line path 1.
-  svg.append("path")
-      .data([data])
-      .attr("class", "line")
-      .attr("d", vline1);
-
-  // Add the line path 2.
-  svg.append("path")
-      .data([data])
-      .attr("class", "line")
-      .style("stroke", "green")
-      .attr("d", vline2);
-
-  // Add the X Axis
-  svg.append("g")
-      .attr("transform", "translate(0," + height + ")")
-      .call(d3.axisBottom(x));
-
-  // Add the Y1 Axis
-  svg.append("g")
-      .attr("class", "axisLightGreen")
-      .call(d3.axisLeft(y1));
-
-  // Add the Y2 Axis
-  svg.append("g")
-      .attr("class", "axisDarkGreen")
-      .attr("transform", "translate( " + width + ", 0 )")
-      .call(d3.axisRight(y2));
-
-});
-
-</script>
+	</script>
 </body>

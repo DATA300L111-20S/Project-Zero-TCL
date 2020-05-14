@@ -36,12 +36,26 @@ top > figure {
   flex: 1;
 }
 
+middle {
+  display: flex;
+}
+
+third {
+  display: flex;
+}
+
+third > section {
+  flex: 0;
+}
 
 footer {
   display: flex;
   justify-content: center;
   align-items: center;
 }
+
+
+/* Interactivity and individual chart styling. */
 
 div.tooltip {
   color: white;

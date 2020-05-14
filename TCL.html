@@ -330,63 +330,6 @@
             return d;
           });
       });
-      //Driver Pie Chart
-      const piewidth = 540;
-      const pieheight = 540;
-      const radius = Math.min(piewidth, pieheight) / 2;
-
-      const svg = d3.select("#chart-area")
-        .append("svg")
-        .attr("wdith", piewidth)
-        .attr("height", pieheight)
-        .append("g")
-        .attr("transform", "translate(${piewidth /2}, ${pieheight / 2})");
-
-      const piecolor = d3.scaleOrdinal(["#66c2a5", "#fc8d62", "#8da0cb",
-        "#e78ac3"
-      ]);
-
-      const pie = d3.pie()
-        .value(d => d.count)
-        .sort(null);
-
-      const arc = d3.arc()
-        .innerRadius(0)
-        .outerRadius(radius);
-
-      function type(d) {
-        d.driver = Number(d.driver);
-        return d;
-      }
-
-      function arcTween(a) {
-        const i = d3.interpolate(this._current, a);
-        this._current = i(1);
-        return (t) => arc(i(t));
-      }
-
-      d3.csv("driver.csv", type).then(data => {
-        d3.selectAll("input")
-          .on("change", update)
-
-        function update(val = this.value) {
-          const path = svg.selectAll("path")
-            .data(pie(data[val]));
-
-          path.transition().duration(200).attrTween("d", arcTween);
-
-          path.enter().append("path")
-            .attr("fill", (d, i) => piecolor(i))
-            .attr("d", arc)
-            .attr("stroke", "white")
-            .attr("stroke-width", "6px")
-            .each(function(d) {
-              this._current = d;
-            });
-        }
-        update("driver");
-      });
-
 
       //Proportional Symbol Chart
       var symbolData = [{

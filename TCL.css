@@ -81,15 +81,16 @@ rect:hover {
 .tooltip {
   background: #d6ecf3;
   border: solid;
-  border-radius: 20px;
+  border-radius: 30px;
   font-family: $font;
   font-size: 18px;
   font-weight: bold;
-  height: 90px;
-  padding: 8px;
+  height: 70px;
+  padding: 10px;
   pointer-events: none;
   position: absolute;
   text-align: center;
+  text-align: justify;
   width: 200px;
 }
 

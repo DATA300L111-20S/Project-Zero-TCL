@@ -1,58 +1,76 @@
 @import url("https://fonts.googleapis.com/css2?family=Jost:wght@300&display=swap");
 
 html {
-	font-size: 100%;
-	font-family: "Jost", sans-serif;
-	background-color: ghostwhite;
-	overflow-y: scroll
+  font-size: 100%;
+  font-family: "Jost", sans-serif;
+  background-color: ghostwhite;
+  overflow-y: scroll
 }
-.bold { font-weight: bold; }
 
-body {
-	padding: 0 2%;
-	margin: 0;
+.bold {
+  font-weight: bold;
 }
 
 header {
-	text-align: center;
+  text-align: center
 }
 
-main {
-	display: flex;
+body {
+  padding: 0 2%;
+  margin: 0;
+}
+
+header {
+  text-align: center;
+}
+
+top {
+  display: flex;
+}
+
+top > section {
+  flex: 1;
+}
+
+top > figure {
+  flex: 3;
+  position: relative;
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
 footer {
-	display: flex;
-	justify-content: center;
-	align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 main > section {
-	flex: 1
+  flex: 1
 }
 
 main > figure {
-	flex: 3;
-	position: relative;
-	margin-top: 0;
-	margin-bottom: 0;
+  flex: 3;
+  position: relative;
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
 div.tooltip {
-	color: white;
-	position: absolute;
-	text-align: center;
-	width: 90px;
-	height: 50px;
-	padding: 2px;
-	font: 12 px sans-serif;
-	background: rgba(0, 0, 0, 0.8);
-	border: 2px solid black;
-	pointer-events: none;
+  color: white;
+  position: absolute;
+  text-align: center;
+  width: 110px;
+  height: 60px;
+  padding: 2px;
+  font: 12 px sans-serif;
+  background: rgba(0, 0, 0, 0.8);
+  border: 2px solid black;
+  pointer-events: none;
 }
 
 rect:hover {
-	fill: #bfe6ff;
+  fill: #bfe6ff;
 }
 
 .tooltip {
@@ -71,23 +89,27 @@ rect:hover {
 }
 
 span {
-	color: #1E5631;
-	font-weight: bold;
+  color: #1E5631;
+  font-weight: bold;
 }
 
 
 .line {
-	fill: none;
-	stroke: #00DB00;
-	stroke-width: 4px;
+  fill: none;
+  stroke: #00DB00;
+  stroke-width: 4px;
 }
 
 .axisLightGreen text {
 	fill: #32cd32;
 	font-size: small;
+
+  fill: #32cd32;
+  font-weight: bold;
+  font-size: small;
 }
 
 .axisDarkGreen text {
-	fill: green;
-	font-size: small;
+  fill: green;
+  font-size: small;
 }

@@ -7,7 +7,7 @@
 
 <head>
 	<title>Tree Cover Loss in Brazil</title>
-	<meta charset="utf=8" />
+	<meta charset="utf=8" content="width=device-width, initial-scale1.0" />
 	<link href="TCL.css" rel="stylesheet" />
 	<script type="text/javascript" src="d3.js"></script>
 	<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
@@ -180,7 +180,6 @@
 			}
 
 			makeLegend()
-
 			// Grouped Bar Chart
 			var GroupBar = d3.select("#bar-chart")
 				.append("svg")
@@ -313,7 +312,7 @@
 					});
 
 				legend.append("rect")
-					.attr("x", width + 100)
+					.attr("x", width + 255)
 					.attr("width", 18)
 					.attr("height", 18)
 					.attr("fill", color)
@@ -324,7 +323,7 @@
 					});
 
 				legend.append("text")
-					.attr("x", width + 90)
+					.attr("x", width + 250)
 					.attr("y", 10)
 					.attr("dy", "0.32em")
 					.text(function(d) {
@@ -466,7 +465,7 @@
 				.attr("font-size", "17px")
 				.attr("fill", "black");
 
-			//Dual Axis Line Chart
+		//Dual Axis Line Chart
 			// set dimensions and margins of the graph
 
 			var DualLine = d3.select("#line-chart")
@@ -583,9 +582,9 @@
 					.attr("dy", "1em")
 					.style("text-anchor", "middle")
 					.text("CO2 Emmissions (Gt.)");
-
-
 			});
+
+
 		};
 
 	</script>
@@ -593,34 +592,50 @@
 </head>
 
 <body>
-	<h1><b>Tree Cover Loss in Brazil: A Comprehensive Visualization.</b></h1>
-	<section>
+	<header>
+
+		<h1><b>Tree Cover Loss in Brazil: A Comprehensive Visualization.</b></h1>
+
 		<h1><a href "https://blog.globalforestwatch.org/data-and-research/when-a-tree-falls-is-it-deforestation"> When a tree falls, is it deforestation?</a></h1>
-		<h3>Deforestation has become, no doubt, one of the leading topics concerning climate change and global sustainability, as its impact can be seen world wide leading to biodiversity loss and political turmoil. Forests make up 31% of the total land area on our planet and provide a vast amount of resources needed to sustain both human and animal life. This is especially concerning in tropical rainforests, such as Brazil, as the consequences of deforestation are vast and surmounting. However, what do we mean by deforestation and what does it look like in Brazil? On this page, we’ve set out to answer these questions with a set of interactive visualizations to understand what tree cover loss is in Brazil. <i>Please explore and read the following charts to find out more.</i></h3>
-	</section>
+
+	</header>
+
+	<top>
+
+		<section>
+			<h3>Deforestation has become, no doubt, one of the leading topics concerning climate change and global sustainability, as its impact can be seen world wide leading to biodiversity loss and political turmoil. Forests make up 31% of the total land area on our planet and provide a vast amount of resources needed to sustain both human and animal life. This is especially concerning in tropical rainforests, such as Brazil, as the consequences of deforestation are vast and surmounting. However, what do we mean by deforestation and what does it look like in Brazil? On this page, we’ve set out to answer these questions with a set of interactive visualizations to understand what tree cover loss is in Brazil. <i>Please explore and read the following charts to find out more.</i></h3>
+		</section>
+
+		<figure id="choropleth-map">
+			<h1>Percentage of Tree Cover Loss per State in Brazil.</h1>
+			<h3>This chart maps the aggregate percentage of tree cover loss in each of Brazil’s states between 2001 and 2018. </h3>
+		</figure>
+
+	</top>
+
 	<section>
-		<h1>Percentage of Tree Cover Loss per State in Brazil.</h1>
-		<h3>This chart maps the aggregate percentage of tree cover loss in each of Brazil’s states between 2001 and 2018. </h3>
-		<!--Choropleth Map-->
-		<figure id="choropleth-map"></figure>
-		<h2><b>Brazil's <b>Top 3 States</b> with Highest Tree Cover Loss from 2008 to 2018.</b></h2>
-		<h3>Here, you'll notice the top three states of Brazil that have experience a record high of Tree Cover Loss within the last decade. Notice the trend as time progresses by hovering over each bar.</h3>
-		<h4> The State, <strong>Mato Grosso</strong> having the highest number of Tree Cover Loss also has some of the highest rate of TCL across the globe. One of it regions,Vera has made the record loss of Tree Cover of 44% in comparison to the global loss of 19%.</h4>
-		
-		<!--Bar Chart-->
-		<figure id="bar-chart"></figure>
+
 		<div id=class="chart">
+			<h2><b>Brazil's Top 3 States with Highest Tree Cover Loss from 2008 to 2018.</b></h2>
+			<h3>Here, you'll notice the top three states of Brazil, Mato Grosso, Rondonia, and Maranhao, that have experienced a record high of Tree Cover Loss within the last decade. Notice the trend as time progresses by hovering over each bar.</h3>
+			<h4> **<strong>Mato Grosso</strong> having the highest number of Tree Cover Loss in Brazil also has some of the highest rates of TCL across the globe. One of Mato Grosso's regions, Vera, has had a record loss of 44% of its total Tree Cover in comparison to a global loss of 19%.(GFW)</h4>
+			<figure id="bar-chart"></figure>
 		</div>
-		
+
+	</section>
+
+	<middle>
 		<h2>Tree Cover Loss by Driving Factor.</h2>
 		<h3>The following symbols represent the amount of Mha (million hectare acres) of land that was lost for that specific reason. The size of the symbol correlates to the amount lost. </h3>
-		<!--Pro.Symbol Chart-->
+	</middle>
+
+	<section>
 		<figure id="symbol-chart"></figure>
 		<h4>*Includes tree cover loss driven by Wildfire, Urbanization, and other unknown causes.</h4>
 		<h2>Tree Cover Loss per Year with Carbon Dioxide Emissions.</h2>
 		<h3>The loss of tree cover has an underestimated impact on the amount of CO<sup>2</sup> it adds into the air every year. As we can see, the amount of CO<sup>2</sup> emissions in Brazil follows the amount of tree cover loss. This relationship unveils a deeper importance of tree cover loss and deforestation than most know. </h3>
-		<!--Line Chart-->
 		<figure id="line-chart"></figure>
+		<h3> Seeing a massive spike in 2016 for a high of 5.38 Million Hectare Acres of TCL and 1.94 giggatones (Gt.) of CO2 dispersed into the atmosphere, we only grow more and more anxious behind what the future holds for these heavily impacted areas. </h3>
 	</section>
 
 	<footer>
@@ -629,6 +644,9 @@
 		<li><a href="https://www.worldwildlife.org/threats/deforestation-and-forest-degradation">World Wildlife Fund: Forest Degradation</a></li>
 		<li> <a href="https://www.reuters.com/article/us-global-forests-emissions-trfn/carbon-emissions-from-tropical-forest-loss-underestimated-scientists-say-idUSKBN1XA1CB">Reuters: Global Forest Emissions</a>
 		</li>
+		<li> <a href="https://www.d3-graph-gallery.com/choropleth">D3 Graph Gallery</a>
+		</li>
+
 
 	</footer>
 

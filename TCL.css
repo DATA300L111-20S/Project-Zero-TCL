@@ -28,13 +28,13 @@ top {
   display: flex;
 }
 
-top > section {
-  flex: 1;
+top > figure {
+  flex: 5;
 }
 
 top > figure {
-  flex: 3;
-  position: relative;
+  flex: 0;
+  position: sticky;
   margin-top: 0;
   margin-bottom: 0;
 }
@@ -92,22 +92,6 @@ span {
   color: #1E5631;
   font-weight: bold;
 }
-
-#chart-area svg {
-  margin: auto;
-  display: inherit;
-}
-
-text {
-  font: 10px sans-serif;
-}
-
-form {
-  position: absolute;
-  right: 10px;
-  top: 10px;
-}
-
 
 .line {
   fill: none;

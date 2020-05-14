@@ -74,23 +74,38 @@ rect:hover {
 }
 
 .tooltip {
-	background: #d6ecf3;
-	border: solid;
-	border-radius: 10px;
-	font-family: $font;
-	font-size: 18px;
-	font-weight: bold;
-	height: 30px;
-	padding: 8px;
-	pointer-events: none;
-	position: absolute;
-	text-align: left;
-	width: 100px;
+  background: #d6ecf3;
+  border: solid;
+  border-radius: 10px;
+  font-family: $font;
+  font-size: 18px;
+  font-weight: bold;
+  height: 30px;
+  padding: 8px;
+  pointer-events: none;
+  position: absolute;
+  text-align: left;
+  width: 100px;
 }
 
 span {
   color: #1E5631;
   font-weight: bold;
+}
+
+#chart-area svg {
+  margin: auto;
+  display: inherit;
+}
+
+text {
+  font: 10px sans-serif;
+}
+
+form {
+  position: absolute;
+  right: 10px;
+  top: 10px;
 }
 
 
@@ -101,8 +116,8 @@ span {
 }
 
 .axisLightGreen text {
-	fill: #32cd32;
-	font-size: small;
+  fill: #32cd32;
+  font-size: small;
 
   fill: #32cd32;
   font-weight: bold;

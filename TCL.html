@@ -368,7 +368,7 @@
 
       const symbol = d3.select("#symbol-chart")
         .append("svg")
-        .attr("width", 800)
+        .attr("width", 700)
         .attr("height", 400);
 
       var squares = symbol.selectAll("rect")
@@ -632,19 +632,22 @@
   <third>
     <section>
       <h1>So what does Tree Cover Loss <i>look</i> like?</h1>
-      <h2>INSERT INFORMATION HERE</h2>
+
+      <h3>Deforestation refers to the <a href="https://youmatter.world/en/definition/definitions-what-is-definition-deforestation-causes-effects/">“decrease in forest areas across the world that are lost for other uses.” </a> This definition excludes the differences between permanent deforestation and recoverable tree loss. We have to consider all forms of tree cover loss as important, whether permanent or not, as they translate differently to policymakers and conservation efforts. This is especially true for Brazil, where tree cover loss looks much different than the rest of the world. Commodity driven deforestation makes up a total of 64% of total loss in Brazil, compared to the only 27% across the globe. Commodity driven tree cover loss represents a permanent conversion of forest for global sourcing of products such as oil and beef. The dominating size of this driver, represented by the symbol to the right, indicates a dire need to move towards a more sustainable sourcing of global goods that does not permanently convert forests, especially concerning the Amazon Rainforest. </h3>
     </section>
+
     <symbol>
       <h1>Tree Cover Loss by Driving Factor.</h1>
       <h3>The following symbols represent the amount of Mha (million hectare acres) of land that was lost for that specific reason. The size of the symbol correlates to the amount lost. </h3>
       <figure id="symbol-chart"></figure>
-      <h4>*Includes tree cover loss driven by Wildfire, Urbanization, and other unknown causes.</h4>
-      <h2>Tree Cover Loss per Year with Carbon Dioxide Emissions.</h2>
+      <h4>*Includes TCL driven by Wildfire, Urbanization, and other unknown causes.</h4>
     </symbol>
+
   </third>
 
 
   <bottom>
+    <h1>Tree Cover Loss per Year with Carbon Dioxide Emissions.</h1>
     <h3>The loss of tree cover has an underestimated impact on the amount of CO<sup>2</sup> it adds into the air every year. As we can see, the amount of CO<sup>2</sup> emissions in Brazil follows the amount of tree cover loss. This relationship unveils a deeper importance of tree cover loss and deforestation than most know. </h3>
     <figure id="line-chart"></figure>
     <h3> Seeing a massive spike in 2016 for a high of 5.38 Million Hectare Acres of TCL and 1.94 giggatones (Gt.) of CO2 dispersed into the atmosphere, we only grow more and more anxious behind what the future holds for these heavily impacted areas. </h3>

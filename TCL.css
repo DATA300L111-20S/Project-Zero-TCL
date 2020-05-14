@@ -29,31 +29,13 @@ top {
 }
 
 top > figure {
-  flex: 5;
-}
-
-top > figure {
-  flex: 0;
-  position: sticky;
-  margin-top: 0;
-  margin-bottom: 0;
+  flex: 1;
 }
 
 footer {
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-main > section {
-  flex: 1
-}
-
-main > figure {
-  flex: 3;
-  position: relative;
-  margin-top: 0;
-  margin-bottom: 0;
 }
 
 div.tooltip {

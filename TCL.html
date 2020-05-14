@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 
 <!-- Course: DATA 300-111-20S
@@ -290,9 +291,7 @@
 					.attr("transform",
 						"translate(" + (width / 2) + " ," +
 						(height + margin.top + 10) + ")")
-					.attr("font-size", 14)
 					.style("text-anchor", "middle")
-					.attr("font-weight", "bold")
 					.text("Year");
 
 				g.append("g")
@@ -304,13 +303,12 @@
 					.attr("dy", "0.50em")
 					.attr("fill", "#000")
 					.attr("font-weight", "bold")
-					.attr("font-size", 14)
 					.attr("text-anchor", "start")
 					.text("Tree Cover Loss (KHA)");
 
 				var legend = g.append("g")
 					.attr("font-family", "sans-serif")
-					.attr("font-size", 14)
+					.attr("font-size", 12)
 					.attr("text-anchor", "end")
 					.selectAll("g")
 					.data(keys.slice().reverse())

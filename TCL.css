@@ -44,8 +44,12 @@ third {
   display: flex;
 }
 
-third > section {
-  flex: 0;
+third > symbol {
+  flex-shrink: 1;
+}
+
+third > symbol {
+  padding-left: 50px
 }
 
 footer {

@@ -184,8 +184,9 @@
 			// Grouped Bar Chart
 			var GroupBar = d3.select("#bar-chart")
 				.append("svg")
-				.attr("width", 1200)
-				.attr("height", 385);
+				.attr("width", 1150)
+				.attr("height", 350)
+				.attr("viewBox", "30 -5 1000 390")
 			var margin = {
 				top: 5,
 				right: 5,
@@ -199,7 +200,7 @@
 			var x0 = d3.scaleBand()
 				.rangeRound([0, width], .1);
 			var x1 = d3.scaleBand()
-				.padding(0.05);
+				.padding(0.10);
 
 			var y = d3.scaleLinear()
 				.rangeRound([height, 0]);
@@ -308,11 +309,11 @@
 					.data(keys.slice().reverse())
 					.enter().append("g")
 					.attr("transform", function(d, i) {
-						return "translate(0," + i * 25 + ")";
+						return "translate(0," + i * 30 + ")";
 					});
 
 				legend.append("rect")
-					.attr("x", width)
+					.attr("x", width + 100)
 					.attr("width", 18)
 					.attr("height", 18)
 					.attr("fill", color)
@@ -323,7 +324,7 @@
 					});
 
 				legend.append("text")
-					.attr("x", width - 14)
+					.attr("x", width + 90)
 					.attr("y", 10)
 					.attr("dy", "0.32em")
 					.text(function(d) {
@@ -471,17 +472,17 @@
 			var DualLine = d3.select("#line-chart")
 				.append("svg")
 				.attr("width", 1000)
-				.attr("height", 400)
-				.attr("transform",
-					"translate(" + margin.left + "," + margin.top + ")");
+				.attr("height", 675)
+				.attr("viewBox", "0 -10 900 670");
+
 			var margin = {
-				top: 20,
-				right: 40,
-				bottom: 30,
-				left: 10
-			};
-			var width = +DualLine.attr("width") - margin.left - margin.right;
-			var height = +DualLine.attr("height") - margin.top - margin.bottom;
+					top: 20,
+					right: 40,
+					bottom: 30,
+					left: 50
+				},
+				width = 960 - margin.left - margin.right,
+				height = 400 - margin.top - margin.bottom;
 
 			// set x and y range
 			var x = d3.scaleLinear().rangeRound([0, width]);
@@ -511,10 +512,9 @@
 
 				// format the data
 				data.forEach(function(d) {
-					d.Year = parseInt(d.Year);
-					d.close = +d.TCL;
-					parseInt
-					d.open = +d.CO2;
+					d.Year = +d.Year;
+					d.TCL = +d.TCL;
+					d.CO2 = +d.CO2;
 				});
 
 				// Scale the range of the data
@@ -546,22 +546,48 @@
 					.attr("transform", "translate(0," + height + ")")
 					.call(d3.axisBottom(x));
 
+				DualLine.append("text")
+					.attr("transform",
+						"translate(" + (width / 2) + " ," +
+						(height + margin.top + 10) + ")")
+					.style("text-anchor", "middle")
+					.text("Year");
+
 				// Add the Y1 Axis
 				DualLine.append("g")
 					.attr("class", "axisLightGreen")
+					.attr("stroke", "#00DB00")
 					.call(d3.axisLeft(y1));
-				 
+
+				// Add Axis Label
+				DualLine.append("text")
+					.attr("transform", "rotate(-90)")
+					.attr("y", 0 - margin.left)
+					.attr("x", 0 - (height / 2))
+					.attr("dy", "1em")
+					.style("text-anchor", "middle")
+					.text("TCL in MHA (Million Hectare Acres)");
+
 
 				// Add the Y2 Axis
 				DualLine.append("g")
 					.attr("class", "axisDarkGreen")
 					.attr("transform", "translate( " + width + ", 0 )")
 					.call(d3.axisRight(y2))
-					.attr("stroke", color)
-					.attr("stroke-width", 2);
+					.attr("stroke", color);
+
+				Dual.append("text")
+					.attr("transform", "rotate(-270)")
+					.attr("y", 0 - margin.right)
+					.attr("x", 0 - (height / 2))
+					.attr("dy", "1em")
+					.style("text-anchor", "middle")
+					.text("CO2 Emmissions (Gt.)");
+
 
 			});
 		};
+
 	</script>
 
 </head>
@@ -577,13 +603,15 @@
 		<h3>This chart maps the aggregate percentage of tree cover loss in each of Brazil’s states between 2001 and 2018. </h3>
 		<!--Choropleth Map-->
 		<figure id="choropleth-map"></figure>
-		<h2><b>Brazil's Top 3 States with Highest Tree Cover Loss from 2008 to 2018.</b></h2>
+		<h2><b>Brazil's <b>Top 3 States</b> with Highest Tree Cover Loss from 2008 to 2018.</b></h2>
 		<h3>Here, you'll notice the top three states of Brazil that have experience a record high of Tree Cover Loss within the last decade. Notice the trend as time progresses by hovering over each bar.</h3>
 		<h4> The State, <strong>Mato Grosso</strong> having the highest number of Tree Cover Loss also has some of the highest rate of TCL across the globe. One of it regions,Vera has made the record loss of Tree Cover of 44% in comparison to the global loss of 19%.</h4>
+		
 		<!--Bar Chart-->
 		<figure id="bar-chart"></figure>
 		<div id=class="chart">
 		</div>
+		
 		<h2>Tree Cover Loss by Driving Factor.</h2>
 		<h3>The following symbols represent the amount of Mha (million hectare acres) of land that was lost for that specific reason. The size of the symbol correlates to the amount lost. </h3>
 		<!--Pro.Symbol Chart-->
@@ -604,4 +632,6 @@
 
 	</footer>
 
-</body></html>
+</body>
+
+</html>

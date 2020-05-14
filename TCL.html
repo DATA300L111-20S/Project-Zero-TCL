@@ -274,7 +274,8 @@
 
           .on("mouseover", (d) => {
             tooltip.transition().duration(300).style('opacity', 1);
-            tooltip.html(`Tree Cover Loss: <span>${d.value} Kilohectares </span>`)
+            tooltip.html(`Tree Cover Loss: <span>${d.value} Kilohectares </span>`).style('left', d3.event.pageX + 'px')
+              .style('top', d3.event.pageY - 28 + 'px');
           })
 
           .on("mouseout", () =>
@@ -571,7 +572,6 @@
           .attr("dy", "1em")
           .style("text-anchor", "middle")
           .text("TCL in MHA (Million Hectare Acres)");
-
 
         // Add the Y2 Axis
         DualLine.append("g")

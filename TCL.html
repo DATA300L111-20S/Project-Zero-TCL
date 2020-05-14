@@ -207,7 +207,7 @@
 			var color = d3.scaleOrdinal()
 				.range(["#1E5631", "#728c69", "#477998"]);
 
-			var tooltip = d3.select('#bar-chart')
+			var tooltip = d3.select("#bar-chart")
 				.append('div')
 				.attr('class', 'tooltip')
 				.style('opacity', 0);
@@ -290,7 +290,9 @@
 					.attr("transform",
 						"translate(" + (width / 2) + " ," +
 						(height + margin.top + 10) + ")")
+					.attr("font-size", 14)
 					.style("text-anchor", "middle")
+					.attr("font-weight", "bold")
 					.text("Year");
 
 				g.append("g")
@@ -302,12 +304,13 @@
 					.attr("dy", "0.50em")
 					.attr("fill", "#000")
 					.attr("font-weight", "bold")
+					.attr("font-size", 14)
 					.attr("text-anchor", "start")
 					.text("Tree Cover Loss (KHA)");
 
 				var legend = g.append("g")
 					.attr("font-family", "sans-serif")
-					.attr("font-size", 12)
+					.attr("font-size", 14)
 					.attr("text-anchor", "end")
 					.selectAll("g")
 					.data(keys.slice().reverse())
@@ -335,63 +338,6 @@
 						return d;
 					});
 			});
-			//Driver Pie Chart
-			const piewidth = 540;
-			const pieheight = 540;
-			const radius = Math.min(piewidth, pieheight) / 2;
-
-			const svg = d3.select("#chart-area")
-				.append("svg")
-				.attr("wdith", piewidth)
-				.attr("height", pieheight)
-				.append("g")
-				.attr("transform", "translate(${piewidth /2}, ${pieheight / 2})");
-
-			const piecolor = d3.scaleOrdinal(["#66c2a5", "#fc8d62", "#8da0cb",
-				"#e78ac3"
-			]);
-
-			const pie = d3.pie()
-				.value(d => d.count)
-				.sort(null);
-
-			const arc = d3.arc()
-				.innerRadius(0)
-				.outerRadius(radius);
-
-			function type(d) {
-				d.driver = Number(d.driver);
-				return d;
-			}
-
-			function arcTween(a) {
-				const i = d3.interpolate(this._current, a);
-				this._current = i(1);
-				return (t) => arc(i(t));
-			}
-
-			d3.csv("driver.csv", type).then(data => {
-				d3.selectAll("input")
-					.on("change", update)
-
-				function update(val = this.value) {
-					const path = svg.selectAll("path")
-						.data(pie(data[val]));
-
-					path.transition().duration(200).attrTween("d", arcTween);
-
-					path.enter().append("path")
-						.attr("fill", (d, i) => piecolor(i))
-						.attr("d", arc)
-						.attr("stroke", "white")
-						.attr("stroke-width", "6px")
-						.each(function(d) {
-							this._current = d;
-						});
-				}
-				update("driver");
-			});
-
 
 			//Proportional Symbol Chart
 			var symbolData = [{
@@ -545,10 +491,8 @@
 				width = 960 - margin.left - margin.right,
 				height = 400 - margin.top - margin.bottom;
 
-			var parseTime = d3.timeParse("%Y");
-
 			// set x and y range
-			var x = d3.scaleTime().rangeRound([0, width]);
+			var x = d3.scaleLinear().rangeRound([0, width]);
 			var y1 = d3.scaleLinear().range([height, 0]);
 			var y2 = d3.scaleLinear().range([height, 0]);
 
@@ -575,7 +519,7 @@
 
 				// format the data
 				data.forEach(function(d) {
-					d.Year = parseTime(+d.Year);
+					d.Year = +d.Year;
 					d.TCL = +d.TCL;
 					d.CO2 = +d.CO2;
 				});
@@ -656,59 +600,64 @@
 </head>
 
 <body>
+
 	<header>
 
 		<h1><b>Tree Cover Loss in Brazil: A Comprehensive Visualization.</b></h1>
 
-		<h1><a href "https://blog.globalforestwatch.org/data-and-research/when-a-tree-falls-is-it-deforestation"> When a tree falls, is it deforestation?</a></h1>
+		<h1><a href="https://blog.globalforestwatch.org/data-and-research/when-a-tree-falls-is-it-deforestation"> When a tree falls, is it deforestation?</a></h1>
 
 	</header>
 
 	<top>
 
-		<section>
-			<h3>Deforestation has become, no doubt, one of the leading topics concerning climate change and global sustainability, as its impact can be seen world wide leading to biodiversity loss and political turmoil. Forests make up 31% of the total land area on our planet and provide a vast amount of resources needed to sustain both human and animal life. This is especially concerning in tropical rainforests, such as Brazil, as the consequences of deforestation are vast and surmounting. However, what do we mean by deforestation and what does it look like in Brazil? On this page, we’ve set out to answer these questions with a set of interactive visualizations to understand what tree cover loss is in Brazil. <i>Please explore and read the following charts to find out more.</i></h3>
-		</section>
-
 		<figure id="choropleth-map">
 			<h1>Percentage of Tree Cover Loss per State in Brazil.</h1>
-			<h3>This chart maps the aggregate percentage of tree cover loss in each of Brazil’s states between 2001 and 2018. </h3>
+			<h3>This chart maps the aggregate percentage of tree cover loss (TCL) in each of Brazil’s states between 2001 and 2018. Greater percentages of TCL is marked by darker shades of green. Hover over each state to see the individual amount of percentage lost for that area.</h3>
 		</figure>
+
+		<section>
+			<h3>
+				<p>Deforestation has become, no doubt, one of the leading topics concerning climate change and global sustainability, as its impact can be seen world wide leading to biodiversity loss and political turmoil.</p>
+				<p>Forests make up <b>31%</b> of the total land area on our planet and provide a vast amount of resources needed to sustain both human and animal life. This is especially concerning in tropical rainforests, such as in Brazil, as the consequences of deforestation are vast and surmounting. <p>However, what do we mean by deforestation and what does it look like in Brazil? On this page, we’ve set out to answer these questions with a set of interactive visualizations to understand what tree cover loss looks like in Brazil.</p>
+					<p>
+					</p><i>Please explore and read the following charts to find out more.</i>
+			</h3>
+		</section>
 
 	</top>
 
-	<section>
+	<middle>
 
 		<div id=class="chart">
-			<h2><b>Brazil's Top 3 States with Highest Tree Cover Loss from 2008 to 2018.</b></h2>
-			<h3>Here, you'll notice the top three states of Brazil, Mato Grosso, Rondonia, and Maranhao, that have experienced a record high of Tree Cover Loss within the last decade. Notice the trend as time progresses by hovering over each bar.</h3>
-			<h4> **<strong>Mato Grosso</strong> having the highest number of Tree Cover Loss in Brazil also has some of the highest rates of TCL across the globe. One of Mato Grosso's regions, Vera, has had a record loss of 44% of its total Tree Cover in comparison to a global loss of 19%.(GFW)</h4>
+			<h1>Brazil's Top 3 States with Highest Tree Cover Loss from 2008 to 2018.</h1>
+			<h3>Here, you'll notice the top three states of Brazil, <i>Mato Grosso, Rondonia, and Maranhao</i>, that have experienced a record high of tree cover loss within the last decade. Notice the trend as time progresses by hovering over each bar.</h3>
+			<h4> **<i>Mato Grosso</i> has, not only, the highest amount of TCL in Brazil, but also one of the highest rates across the globe. One of Mato Grosso's regions, Vera, has had a record loss of 44% of its total Tree Cover in comparison to a global loss of 19%.</h4>
 			<figure id="bar-chart"></figure>
 		</div>
 
-	</section>
-
-	<middle>
-		<h2>Tree Cover Loss by Driving Factor.</h2>
-		<h3>The following symbols represent the amount of Mha (million hectare acres) of land that was lost for that specific reason. The size of the symbol correlates to the amount lost. </h3>
 	</middle>
 
-	<pie>
-		<figure id="chart-area">
-			<form>
-				<label><input type="radio" name="driver.csv" value="driver">Driver</label>
-			</form>
-		</figure>
-	</pie>
+	<third>
+		<section>
+			<h1>So what does Tree Cover Loss <i>look</i> like?</h1>
+			<h2>INSERT INFORMATION HERE</h2>
+		</section>
+		<symbol>
+			<h1>Tree Cover Loss by Driving Factor.</h1>
+			<h3>The following symbols represent the amount of Mha (million hectare acres) of land that was lost for that specific reason. The size of the symbol correlates to the amount lost. </h3>
+			<figure id="symbol-chart"></figure>
+			<h4>*Includes tree cover loss driven by Wildfire, Urbanization, and other unknown causes.</h4>
+			<h2>Tree Cover Loss per Year with Carbon Dioxide Emissions.</h2>
+		</symbol>
+	</third>
 
-	<section>
-		<figure id="symbol-chart"></figure>
-		<h4>*Includes tree cover loss driven by Wildfire, Urbanization, and other unknown causes.</h4>
-		<h2>Tree Cover Loss per Year with Carbon Dioxide Emissions.</h2>
+
+	<bottom>
 		<h3>The loss of tree cover has an underestimated impact on the amount of CO<sup>2</sup> it adds into the air every year. As we can see, the amount of CO<sup>2</sup> emissions in Brazil follows the amount of tree cover loss. This relationship unveils a deeper importance of tree cover loss and deforestation than most know. </h3>
 		<figure id="line-chart"></figure>
 		<h3> Seeing a massive spike in 2016 for a high of 5.38 Million Hectare Acres of TCL and 1.94 giggatones (Gt.) of CO2 dispersed into the atmosphere, we only grow more and more anxious behind what the future holds for these heavily impacted areas. </h3>
-	</section>
+	</bottom>
 
 	<footer>
 		<h3>Sources and Code References</h3>
@@ -718,7 +667,6 @@
 		</li>
 		<li> <a href="https://www.d3-graph-gallery.com/choropleth">D3 Graph Gallery</a>
 		</li>
-
 
 	</footer>
 

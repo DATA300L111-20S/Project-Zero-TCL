@@ -94,8 +94,8 @@ rect:hover {
   width: 200px;
 }
 
- figure#choropleth-map path:hover {
-  fill: lightyellow;
+figure#choropleth-map path:hover {
+  fill: #bfe6ff;
 }
 
 span {
@@ -104,7 +104,8 @@ span {
 }
 
 
-.line {
+path.line {
+  fill: none;
   stroke: #728c69;
   stroke-width: 4px;
 }

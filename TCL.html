@@ -578,12 +578,17 @@
 
 				// Add the Y2 Axis
 				DualLine.append("g")
-					.attr("class", "axisBLue")
+					.attr("class", "axisDarkgreen")
+					.attr("transform", "translate( " + width + ", 0 )")
+					.call(d3.axisRight(y2));
+
+				DualLine.append("g")
+					.attr("class", "axisDarkgreen")
 					.attr("transform", "translate( " + width + ", 0 )")
 					.call(d3.axisRight(y2))
 					.append("text")
 					.attr("transform", "rotate(-90)")
-					.attr("y", 10)
+					.attr("y", 30)
 					.attr("x", 0 - (height / 2))
 					.attr("dy", "1em")
 					.style("text-anchor", "middle")
@@ -592,7 +597,6 @@
 
 
 		};
-
 	</script>
 
 </head>
@@ -671,6 +675,4 @@
 
 	</footer>
 
-</body>
-
-</html>
+</body></html>

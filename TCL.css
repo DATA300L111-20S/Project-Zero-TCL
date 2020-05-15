@@ -75,7 +75,7 @@ div.tooltip {
 }
 
 rect:hover {
-  fill: lightyellow;
+  fill: #bfe6ff;
 }
 
 .tooltip {
@@ -94,7 +94,7 @@ rect:hover {
   width: 200px;
 }
 
-path:hover {
+ figure#choropleth-map path:hover {
   fill: lightyellow;
 }
 
@@ -103,17 +103,18 @@ span {
   font-weight: bolder;
 }
 
+
 .line {
-  stroke: #00DB00;
+  stroke: #728c69;
   stroke-width: 4px;
 }
 
-.axisLightGreen text {
-  fill: #32cd32;
+.axisGreen text {
+  fill: #728c69;
   font-size: small;
 }
 
-.axisDarkGreen text {
-  fill: green;
+.axisBlue text {
+  fill: #477998;
   font-size: small;
 }

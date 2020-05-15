@@ -96,7 +96,7 @@ rect:hover {
 
 span {
   color: #bfe6ff;
-  font-weight: bolder;
+  font-weight: bold;
 }
 
 .line {
@@ -107,9 +107,8 @@ span {
 
 .axisLightGreen text {
   fill: #32cd32;
-  font-weight: bold;
   font-size: small;
-}
+} 
 
 .axisDarkGreen text {
   fill: green;

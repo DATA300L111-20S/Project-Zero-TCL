@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+path:hover {
+        fill: orange;
+      }
+</style>
+<!-- Load d3.js -->
+<script src="https://d3js.org/d3.v4.js"></script>
+<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+<script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
+
+<!-- Create an element where the map will take place -->
+<svg id="choropleth-map" width="700" height="500"></svg>
+
+<script>
+  // The svg
+  var svg = d3.select("svg"),
+    width = +svg.attr("width"),
+    height = +svg.attr("height");
+
+  // Map and projection
+  var path = d3.geoPath();
+  var projection = d3.geoMercator()
+    .scale(600)
+    .center([-50, -15])
+    .translate([width / 2, height / 2]);
+
+  // Data and color scale
+  var data = d3.map();
+
+  var colorScale = d3.scaleThreshold()
+    .domain([6, 13, 19])
+    .range(d3.schemeGreens[4]);
+
+  d3.csv("tcl.csv", data => {
+    d3.json("https://raw.githubusercontent.com/codeforamerica/click_that_hood/master/public/data/brazil-states.geojson", topo => {
+
+      // Draw the map
+      svg.append("g")
+        .selectAll("path")
+        .data(topo.features)
+        .enter()
+        .append("path")
+
+        //Draw each country
+        .attr("d", d3.geoPath()
+          .projection(projection)
+        )
+
+        //Set color of each country
+        .attr("fill", function(d) {
+          const state = d.properties.name;
+          const stateData = data.filter(row => row.state === state);
+          const percent = stateData[0]["percentage"];
+          return colorScale(percent);
+        });
+    });
+  });
+
+</script>

@@ -3,114 +3,118 @@
 /* General Page Styling */
 
 html {
-  font-size: 100%;
-  font-family: "Jost", sans-serif;
-  background-color: ghostwhite;
-  overflow-y: scroll
+	font-size: 100%;
+	font-family: "Jost", sans-serif;
+	background-color: ghostwhite;
+	overflow-y: scroll
+}
+
+path:hover {
+	fill: ;
 }
 
 .bold {
-  font-weight: bold;
+	font-weight: bold;
 }
 
 header {
-  text-align: center
+	text-align: center
 }
 
 body {
-  padding: 0 2%;
-  margin: 0;
+	padding: 0 2%;
+	margin: 0;
 }
 
 header {
-  text-align: center;
+	text-align: center;
 }
 
 /*Chart layouts */
 
 top {
-  display: flex;
+	display: flex;
 }
 
 top > figure {
-  flex: 1;
+	flex: 1;
 }
 
 middle {
-  display: flex;
+	display: flex;
 }
 
 third {
-  display: flex;
+	display: flex;
 }
 
 third > symbol {
-  flex-shrink: 1;
+	flex-shrink: 1;
 }
 
 third > symbol {
-  padding-left: 50px
+	padding-left: 50px
 }
 
 footer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 
 /* Interactivity and individual chart styling. */
 
 div.tooltip {
-  color: white;
-  position: absolute;
-  text-align: center;
-  width: 110px;
-  height: 60px;
-  padding: 2px;
-  font: 12 px sans-serif;
-  background: rgba(0, 0, 0, 0.8);
-  border: 2px solid black;
-  pointer-events: none;
+	color: white;
+	position: absolute;
+	text-align: center;
+	width: 110px;
+	height: 60px;
+	padding: 2px;
+	font: 12 px sans-serif;
+	background: rgba(0, 0, 0, 0.8);
+	border: 2px solid black;
+	pointer-events: none;
 }
 
 rect:hover {
-  fill: #bfe6ff;
+	fill: #bfe6ff;
 }
 
 .tooltip {
-  background: #d6ecf3;
-  border: solid;
-  border-radius: 30px;
-  font-family: $font;
-  font-size: 18px;
-  font-weight: bold;
-  height: 70px;
-  padding: 10px;
-  pointer-events: none;
-  position: absolute;
-  text-align: center;
-  text-align: justify;
-  width: 200px;
+	background: #d6ecf3;
+	border: solid;
+	border-radius: 30px;
+	font-family: $font;
+	font-size: 18px;
+	font-weight: bold;
+	height: 70px;
+	padding: 10px;
+	pointer-events: none;
+	position: absolute;
+	text-align: center;
+	text-align: justify;
+	width: 200px;
 }
 
 span {
-  color: #bfe6ff;
-  font-weight: bold;
+	color: #bfe6ff;
+	font-weight: bolder;
 }
 
 .line {
-  fill: none;
-  stroke: #00DB00;
-  stroke-width: 4px;
+	fill: none;
+	stroke: #00DB00;
+	stroke-width: 4px;
 }
 
 .axisLightGreen text {
-  fill: #32cd32;
-  font-size: small;
-} 
+	fill: #32cd32;
+	font-size: small;
+}
 
 .axisDarkGreen text {
-  fill: green;
-  font-size: small;
+	fill: green;
+	font-size: small;
 }

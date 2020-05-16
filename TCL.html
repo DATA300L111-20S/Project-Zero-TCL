@@ -598,13 +598,13 @@
       });
 
       //Pie Chart Test Code
-      const piechart = d3.select("#pie-chart"),
-        piewidth = +piechart.attr("width"),
-        pieheight = +piechart.attr("height"),
-        radius = Math.min(width, height) / 2,
-        pieG = piechart.append("g").attr("transform", "translate(" + piewidth / 2 + "," + pieheight / 2 + ")");
+      var svgPie = d3.select("#pie-chart"),
+        widthP = +svgPie.attr("width"),
+        heightP = +svgPie.attr("height"),
+        radius = Math.min(widthP, heightP) / 2,
+        gP = svgPie.append("g").attr("transform", "translate(" + widthP / 2 + "," + heightP / 2 + ")");
 
-      var piecolor = d3.scaleOrdinal(["#98abc5", "#8a89a6", "#7b6888", "#6b486b"]);
+      var colorPie = d3.scaleOrdinal(["#98abc5", "#8a89a6", "#7b6888", "#6b486b"]);
 
       var pie = d3.pie()
         .sort(null)
@@ -620,13 +620,13 @@
         .outerRadius(radius - 40)
         .innerRadius(radius - 40);
 
-      d3.csv("driver.csv", function(d) {
+      d3.csv("driver.csv").then(function(d) {
         d.mha = +d.mha;
         return d;
       }, function(error, data) {
         if (error) throw error;
 
-        var arc = pieG.selectAll(".arc")
+        var arc = gP.selectAll(".arc")
           .data(pie(data))
           .enter().append("g")
           .attr("class", "arc");
@@ -634,7 +634,7 @@
         arc.append("path")
           .attr("d", path)
           .attr("fill", function(d) {
-            return piecolor(d.data.driver);
+            return colorPie(d.data.driver);
           });
 
         arc.append("text")
@@ -646,6 +646,7 @@
             return d.data.driver;
           });
       });
+
 
     };
   </script>
@@ -707,6 +708,10 @@
 
 
   <bottom>
+    <section>
+      <figure id="pie-chart"></figure>
+    </section>
+
     <h1>Tree Cover Loss per Year with Carbon Dioxide Emissions.</h1>
     <h3>The loss of tree cover has an underestimated impact on the amount of CO<sup>2</sup> it adds into the air every year. As we can see, the amount of CO<sup>2</sup> emissions in Brazil follows the amount of tree cover loss. This causal relationship unveils a deeper importance of tree cover loss and deforestation than most know or would like to think about, specifically concerning climate change efforts. </h3>
     <figure id="line-chart"></figure>
@@ -715,9 +720,7 @@
       <p>Thank you for taking the time to read through our visualizations. We hope you have learned more about deforestation, what it looks like, and what impacts it has. </p>
     </h3>
 
-    <section>
-      <figure id="pie-chart"></figure>
-    </section>
+
 
   </bottom>
 

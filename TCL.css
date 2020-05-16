@@ -1,10 +1,12 @@
 @import url("https://fonts.googleapis.com/css2?family=Jost:wght@300&display=swap");
 
+@import url("https://fonts.googleapis.com/css2?family=Noto+Serif&display=swap");
+
 /* General Page Styling */
 
 html {
-  font-size: 100%;
-  font-family: "Garamond", serif;
+  font-size: 90%;
+  font-family: "Noto Serif", serif;
   background-color: #D3E1D0;
   overflow-y: scroll
 }
@@ -20,10 +22,6 @@ header {
 body {
   padding: 0 2%;
   margin: 0;
-}
-
-header {
-  text-align: center;
 }
 
 /*Chart layouts */
@@ -52,6 +50,15 @@ third > symbol {
   padding-left: 50px
 }
 
+bottom {
+  display: flex;
+}
+
+bottom > right {
+  padding-left: 30px;
+  align-content: stretch;
+}
+
 footer {
   display: flex;
   justify-content: center;
@@ -65,7 +72,7 @@ div.tooltip {
   position: absolute;
   text-align: center;
   width: 110px;
-  height: 60px;
+  height: 65px;
   padding: 2px;
   font: 12 px sans-serif;
   background: rgba(0, 0, 0, 0.8);
@@ -103,7 +110,7 @@ span {
 }
 
 .arc text {
-  font: 15px sans-serif;
+  font: 20px "Jost"sans-serif;
   text-anchor: middle;
 }
 
@@ -111,20 +118,24 @@ span {
   stroke: #fff;
 }
 
+pie path: hover {
+  fill: #bfe6ff;
+}
+
 path.line {
   fill: none;
   stroke: #728c69;
-  stroke-width: 4px;
+  stroke-width: 5px;
 }
 
 .axisGreen text {
   fill: #728c69;
-	font-weight: bold;
+  font-weight: bold;
   font-size: small;
 }
 
 .axisDarkgreen text {
   fill: #477998;
-	font-weight: bold;
+  font-weight: bold;
   font-size: small;
 }

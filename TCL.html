@@ -6,739 +6,655 @@
 <html lang="en">
 
 <head>
-	<title>Tree Cover Loss in Brazil</title>
-	<meta charset="utf-8" />
-	<link href="TCL.css" rel="stylesheet" />
-	<script type="text/javascript" src="d3.js"></script>
-	<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
-	<script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
-	<script src='https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.10.3/babel.min.js'></script>
-
-	<script>
-		window.onload = () => {
-
-			//Choropleth Map
-			const brazilMap = d3.select("#choropleth-map")
-				.append("svg")
-				.attr("width", 750)
-				.attr("height", 500);
-
-			var width = +brazilMap.attr("width");
-			var height = +brazilMap.attr("height");
-
-			var path = d3.geoPath();
-			var projection = d3.geoMercator()
-				.scale(650)
-				.center([-44, -15])
-				.translate([width / 2, height / 2]);
-
-			// Data and color scale
-			var data = d3.map();
-
-			//Adding tooltip
-			const div = d3.select("#choropleth-map")
-				.append("div")
-				.attr('class', 'tooltip')
-				.style('opacity', 0);
-
-			var thresholds = [6, 13, 19]
-
-			var colorScale = d3.scaleThreshold()
-				.domain(thresholds)
-				.range(d3.schemeGreens[4]);
-
-			const csvPromise = d3.csv("tcl.csv");
-			const jsonPromise = d3.json("https://raw.githubusercontent.com/codeforamerica/click_that_hood/master/public/data/brazil-states.geojson");
-
-			Promise.all([csvPromise, jsonPromise])
-				.then(([data, topo]) => {
-
-					for (let i = 0; i < topo.features.length; i++) {
-						const topoProp = topo.features[i].properties;
-
-						for (let j = 0; j < data.length; j++) {
-
-							//Find where state in geoJson matches state in Csv
-
-							if (topoProp.name === data[j].state) {
-
-								//Add a new percentage property to the topo data by copying % from csv data.
-
-								topoProp.percentage = data[j].percentage;
-							}
-						}
-					}
-
-					brazilMap.append("g")
-						.selectAll("path")
-						.data(topo.features)
-						.enter()
-						.append("path")
-
-						//Draw each country
-						.attr("d", d3.geoPath()
-							.projection(projection)
-						)
-
-						//Set color of each country
-						.attr("fill", function(d) {
-							const state = d.properties.name;
-							const stateData = data.filter(row => row.state === state);
-							const percent = stateData[0]["percentage"];
-							return colorScale(percent);
-						})
-
-						//Adding hover effect
-						.on('mouseover', function(d) {
-							d3.select(d.properties.name)
-								.transition()
-								.duration('200')
-								.attr('opacity', '.5')
-							d3.select(this)
-								.transition()
-								.duration(200)
-								.style("opacity", 1)
-								.style("stroke", "black");
-
-						})
-						.on('mouseout', function(d) {
-							d3.selectAll(d.properties.name)
-								.transition()
-								.duration('200')
-								.attr('opacity', '.8')
-							d3.select(this)
-								.transition()
-								.duration(200)
-								.style("stroke", "transparent")
-						})
-
-						//Adding the tooltip
-						.style('cursor', 'pointer')
-						.on('mouseover', d => {
-							const state = d.properties.name;
-							div
-								.transition()
-								.duration(200)
-								.style('opacity', 0.9);
-							div
-								.html(state + ": " + d.properties.percentage + "%")
-								.style('left', d3.event.pageX + 'px')
-								.style('top', d3.event.pageY - 28 + 'px');
-						})
-						.on('mouseout', () => {
-							div
-								.transition()
-								.duration(500)
-								.style('opacity', 0);
-						});
-				});
-
-			//Legend function for choropleth map
-			function makeLegend() {
-
-				const yScale = d3.scaleBand()
-					.domain(colorScale.range())
-					.range([height / 2, 3])
-					.paddingOuter(1);
-
-				const legend = brazilMap.append("g")
-					.attr("class", "legend")
-					.attr("transform", "translate(" + width - 40 + ",0)")
-
-				legend.selectAll("rect")
-					.data(colorScale.range())
-					.enter()
-					.append("rect")
-					.attr("x", 500)
-					.attr("y", d => yScale(d))
-					.attr("width", 10)
-					.attr("height", yScale.bandwidth())
-					.style("fill", d => d);
-
-				legend.append("text")
-					.attr("x", 515)
-					.attr("y", (height / 2) - yScale.bandwidth())
-					.text("0%");
-
-				legend.append("text")
-					.attr("x", 515)
-					.attr("y", (yScale.bandwidth() + 41))
-					.text("19%");
-
-				legend.append("text")
-					.attr("x", 515)
-					.attr("y", (yScale.bandwidth() + 82))
-					.text("13%");
-
-				legend.append("text")
-					.attr("x", 515)
-					.attr("y", (yScale.bandwidth() + 123))
-					.text("6%");
-
-				legend.append("text")
-					.attr("x", 515)
-					.attr("y", yScale.bandwidth())
-					.text("22%+");
-			}
-
-			makeLegend()
-
-			// Grouped Bar Chart
-			var GroupBar = d3.select("#bar-chart")
-				.append("svg")
-				.attr("width", 1150)
-				.attr("height", 400)
-				.attr("viewBox", "20 -5 1000 458")
-			var margin = {
-				top: 5,
-				right: 5,
-				bottom: 0,
-				left: 25
-			};
-			var width = +GroupBar.attr("width");
-			var height = +GroupBar.attr("height");
-			var g = GroupBar.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-			var x0 = d3.scaleBand()
-				.rangeRound([0, width], .1);
-			var x1 = d3.scaleBand()
-				.padding(0.10);
-
-			var y = d3.scaleLinear()
-				.rangeRound([height, 0]);
-
-			var color = d3.scaleOrdinal()
-				.range(["#1E5631", "#728c69", "#477998"]);
-
-			var tooltip = d3.select("#bar-chart")
-				.append('div')
-				.attr('class', 'tooltip')
-				.style('opacity', 0);
-
-			d3.csv("group.csv").then
-
-			(function(data) {
-				var states = d3.keys(data[0]).filter(function(key) {
-					return key !== "Year";
-				});
-				data.forEach(function(d) {
-					d.state = states.map(function(name) {
-						return {
-							name: name,
-							value: +d[name]
-						};
-					});
-				});
-				var keys = data.columns.slice(1);
-
-				console.log('keys');
-				console.log(keys);
-				x0.domain(data.map(function(d) {
-					return d.Year;
-				}));
-				x1.domain(keys).rangeRound([0, x0.bandwidth()]);
-				y.domain([0, d3.max(data, function(d) {
-					return d3.max(d.state, function(d) {
-						return d.value;
-					});
-				})]).nice();
-
-				g.append("g")
-					.selectAll("g")
-					.data(data)
-					.enter().append("g")
-					.attr("class", "bar")
-					.attr("transform", function(d) {
-						return "translate(" + x0(d.Year) + ",0)";
-					})
-					.selectAll("rect")
-					.data(function(d) {
-						return keys.map(function(key) {
-							return {
-								key: key,
-								value: d[key]
-							};
-						});
-					})
-					.enter().append("rect")
-					.attr("x", function(d) {
-						return x1(d.key);
-					})
-					.attr("y", function(d) {
-						return y(d.value);
-					})
-					.attr("width", x1.bandwidth())
-					.attr("height", function(d) {
-						return height - y(d.value);
-					})
-					.attr("fill", function(d) {
-						return color(d.key)
-					})
-
-					.on("mouseover", (d) => {
-						tooltip.transition().duration(300).style('opacity', 1);
-						tooltip.html(`TCL: <span>${d.value} Kilohectares </span>`).style('left', d3.event.pageX + 'px')
-							.style('top', d3.event.pageY - 28 + 'px');
-					})
-
-					.on("mouseout", () =>
-						tooltip.transition().duration(500).style('opacity', 0));
-
-				// Add AXES
-				g.append("g")
-					.attr("class", "axis")
-					.attr("transform", "translate(0," + height + ")")
-					.call(d3.axisBottom(x0));
-
-				g.append("text")
-					.attr("transform",
-						"translate(" + (width / 2) + " ," +
-						(height + margin.top + 10) + ")")
-					.style("text-anchor", "middle")
-					.text("Year");
-
-				g.append("g")
-					.attr("class", "y axis")
-					.call(d3.axisLeft(y))
-					.append("text")
-					.attr("x", 5)
-					.attr("y", y(y.ticks().pop()) + 1)
-					.attr("dy", "0.50em")
-					.attr("fill", "#000")
-					.attr("font-weight", "bold")
-					.attr("text-anchor", "start")
-					.text("Tree Cover Loss (KHA)");
-
-				var legend = g.append("g")
-					.attr("font-family", "sans-serif")
-					.attr("font-size", 12)
-					.attr("text-anchor", "end")
-					.selectAll("g")
-					.data(keys.slice().reverse())
-					.enter().append("g")
-					.attr("transform", function(d, i) {
-						return "translate(0," + i * 30 + ")";
-					});
-
-				legend.append("rect")
-					.attr("x", width + 255)
-					.attr("width", 18)
-					.attr("height", 18)
-					.attr("fill", color)
-					.attr("stroke", color)
-					.attr("stroke-width", 2)
-					.on("click", function(d) {
-						update(d)
-					});
-
-				legend.append("text")
-					.attr("x", width + 250)
-					.attr("y", 10)
-					.attr("dy", "0.32em")
-					.text(function(d) {
-						return d;
-					});
-			});
-
-			//Proportional Symbol Chart
-			var symbolData = [{
-					"Driver": "Commodity Driven",
-					"Amount": "36.41 Mha",
-					"x": 0,
-					"y": 17.95,
-					"w": 364.1,
-					"color": "#0E402D"
-				},
-				{
-					"Driver": "Shifting Agriculture",
-					"Amount": "11.09 Mha",
-					"x": 384.1,
-					"y": 144.55,
-					"w": 110.9,
-					"color": "#477998"
-				},
-				{
-					"Driver": "Forestry",
-					"Amount": "5.98 Mha",
-					"x": 515,
-					"y": 170.1,
-					"w": 59.0,
-					"color": "#728c69"
-				},
-				{
-					"Driver": "Others",
-					"Amount": "0.38 Mha",
-					"x": 594.8,
-					"y": 198.1,
-					"w": 3.8,
-					"color": "#A3333D"
-				}
-			];
-
-			const symbol = d3.select("#symbol-chart")
-				.append("svg")
-				.attr("width", 700)
-				.attr("height", 400);
-
-			var squares = symbol.selectAll("rect")
-				.data(symbolData)
-				.enter()
-				.append("rect");
-
-			var squareAttributes = squares
-				.attr("x", function(d) {
-					return d.x;
-				})
-				.attr("y", function(d) {
-					return d.y;
-				})
-				.attr("width", function(d) {
-					return d.w;
-				})
-				.attr("height", function(d) {
-					return d.w;
-				})
-				.style("fill", function(d) {
-					return d.color;
-				});
-
-			symbol.append("text")
-				.text("Commodity Driven:")
-				.attr("x", 182.05)
-				.attr("y", 182.05)
-				.attr("text-anchor", "middle")
-				.attr("font-family", "sans-serif")
-				.attr("font-size", "25px")
-				.attr("fill", "white");
-
-			symbol.append("text")
-				.text("36.41 Mha")
-				.attr("x", 182.05)
-				.attr("y", 208.05)
-				.attr("text-anchor", "middle")
-				.attr("font-family", "sans-serif")
-				.attr("font-size", "25px")
-				.attr("fill", "white");
-
-			symbol.append("text")
-				.text("Shifting Agriculture:")
-				.attr("x", 439.55)
-				.attr("y", 120)
-				.attr("text-anchor", "middle")
-				.attr("font-family", "sans-serif")
-				.attr("font-size", "17px")
-				.attr("fill", "black");
-
-			symbol.append("text")
-				.text("11.09 Mha")
-				.attr("x", 439.55)
-				.attr("y", 137)
-				.attr("text-anchor", "middle")
-				.attr("font-family", "sans-serif")
-				.attr("font-size", "17px")
-				.attr("fill", "black");
-
-			symbol.append("text")
-				.text("Forestry:")
-				.attr("x", 544.5)
-				.attr("y", 150)
-				.attr("text-anchor", "middle")
-				.attr("font-family", "sans-serif")
-				.attr("font-size", "17px")
-				.attr("fill", "black");
-
-			symbol.append("text")
-				.text("5.98 Mha")
-				.attr("x", 544.5)
-				.attr("y", 165)
-				.attr("text-anchor", "middle")
-				.attr("font-family", "sans-serif")
-				.attr("font-size", "17px")
-				.attr("fill", "black");
-
-			symbol.append("text")
-				.text("Others*")
-				.attr("x", 630)
-				.attr("y", 178)
-				.attr("text-anchor", "middle")
-				.attr("font-family", "sans-serif")
-				.attr("font-size", "17px")
-				.attr("fill", "black");
-
-			symbol.append("text")
-				.text("0.38 Mha")
-				.attr("x", 630)
-				.attr("y", 193)
-				.attr("text-anchor", "middle")
-				.attr("font-family", "sans-serif")
-				.attr("font-size", "17px")
-				.attr("fill", "black");
-
-			//Dual Axis Line Chart
-			// set dimensions and margins of the graph
-
-			var DualLine = d3.select("#line-chart")
-				.append("svg")
-				.attr("width", 900)
-				.attr("height", 400)
-				.attr("viewBox", "0 -10 900 460");
-
-			var parseTime = d3.timeParse("%Y");
-			var margin = {
-					top: 20,
-					right: 40,
-					bottom: 30,
-					left: 50
-				},
-				width = 960 - margin.left - margin.right,
-				height = 450 - margin.top - margin.bottom;
-
-			// set x and y range
-			var x = d3.scaleTime().rangeRound([0, width]);
-			var y1 = d3.scaleLinear().range([height, 0]);
-			var y2 = d3.scaleLinear().range([height, 0]);
-
-			// define line1
-			var vline1 = d3.line()
-				.x(function(d) {
-					return x(d.Year);
-				})
-				.y(function(d) {
-					return y1(d.TCL);
-				});
-
-			// define line2
-			var vline2 = d3.line()
-				.x(function(d) {
-					return x(d.Year);
-				})
-				.y(function(d) {
-					return y2(d.CO2);
-				});
-
-			// Parse data
-			d3.csv("dual_line.csv").then(function(data) {
-
-				// format the data
-				data.forEach(function(d) {
-					d.Year = parseTime(+d.Year);
-					d.TCL = +d.TCL;
-					d.CO2 = +d.CO2;
-				});
-
-				// Scale the range of the data
-				x.domain(d3.extent(data, function(d) {
-					return d.Year;
-				}));
-				y1.domain([0, d3.max(data, function(d) {
-					return Math.max(d.TCL);
-				})]);
-				y2.domain([0, d3.max(data, function(d) {
-					return Math.max(d.CO2);
-				})]);
-
-				// Add the line path 1.
-				DualLine.append("path")
-					.data([data])
-					.attr("class", "line")
-					.attr("fill", "none")
-					.style("stroke", "#728c69")
-					.attr("d", vline1);
-
-				// Add the line path 2.
-				DualLine.append("path")
-					.data([data])
-					.attr("class", "line")
-					.attr("fill", "none")
-					.style("stroke", "#477998")
-					.attr("d", vline2);
-
-				// Add the X Axis
-				DualLine.append("g")
-					.attr("transform", "translate(0," + height + ")")
-					.call(d3.axisBottom(x));
-
-				DualLine.append("text")
-					.attr("transform",
-						"translate(" + (width / 2) + " ," +
-						(height + margin.top + 10) + ")")
-					.style("text-anchor", "bottom")
-					.style("font-weight", "bold")
-					.text("Year");
-
-				// Add the Y1 Axis
-				DualLine.append("g")
-					.attr("class", "axisGreen")
-					.call(d3.axisLeft(y1))
-					// Add Axis Label
-					.append("text")
-					.attr("transform", "rotate(-90)")
-					.attr("y", 0 - margin.left)
-					.attr("x", 0 - (height / 2))
-					.attr("dy", "1em")
-					.style("text-anchor", "middle")
-					.text("TCL in MHA (Million Hectare Acres)");
-
-				// Add the Y2 Axis
-				DualLine.append("g")
-					.attr("class", "axisDarkgreen")
-					.attr("transform", "translate( " + width + ", 0 )")
-					.call(d3.axisRight(y2));
-
-				DualLine.append("g")
-					.attr("class", "axisDarkgreen")
-					.attr("transform", "translate( " + width + ", 0 )")
-					.call(d3.axisRight(y2))
-					.append("text")
-					.attr("transform", "rotate(-90)")
-					.attr("y", 30)
-					.attr("x", 0 - (height / 2))
-					.attr("dy", "1em")
-					.style("text-anchor", "middle")
-					.text("CO2 Emmissions (Gt.)");
-			});
-
-			//Pie Chart Test Code
-			var svgPie = d3.select("#pie-chart"),
-				widthP = +svgPie.attr("width"),
-				heightP = +svgPie.attr("height"),
-				radius = Math.min(widthP, heightP) / 2,
-				gP = svgPie.append("g").attr("transform", "translate(" + widthP / 2 + "," + heightP / 2 + ")");
-
-			var colorPie = d3.scaleOrdinal(["#98abc5", "#8a89a6", "#7b6888", "#6b486b"]);
-
-			var pie = d3.pie()
-				.sort(null)
-				.value(function(d) {
-					return d.mha;
-				});
-
-			var path = d3.arc()
-				.outerRadius(radius - 10)
-				.innerRadius(radius - 100);
-
-			var label = d3.arc()
-				.outerRadius(radius - 40)
-				.innerRadius(radius - 40);
-
-			d3.csv("driver.csv").then(function(d) {
-				d.mha = +d.mha;
-				return d;
-			}, function(error, data) {
-				if (error) throw error;
-
-				var arc = gP.selectAll(".arc")
-					.data(pie(data))
-					.enter().append("g")
-					.attr("class", "arc");
-
-				arc.append("path")
-					.attr("d", path)
-					.attr("fill", function(d) {
-						return colorPie(d.data.driver);
-					});
-
-				arc.append("text")
-					.attr("transform", function(d) {
-						return "translate(" + label.centroid(d) + ")";
-					})
-					.attr("dy", "0.35em")
-					.text(function(d) {
-						return d.data.driver;
-					});
-			});
-
-
-		};
-
-	</script>
+  <title>Tree Cover Loss in Brazil</title>
+  <meta charset="utf-8" />
+  <link href="TCL.css" rel="stylesheet" />
+  <script type="text/javascript" src="d3.js"></script>
+  <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+  <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.10.3/babel.min.js'></script>
+
+  <script>
+    window.onload = () => {
+
+      //Choropleth Map
+      const brazilMap = d3.select("#choropleth-map")
+        .append("svg")
+        .attr("width", 750)
+        .attr("height", 500);
+
+      var width = +brazilMap.attr("width");
+      var height = +brazilMap.attr("height");
+
+      var path = d3.geoPath();
+      var projection = d3.geoMercator()
+        .scale(650)
+        .center([-44, -15])
+        .translate([width / 2, height / 2]);
+
+      // Data and color scale
+      var data = d3.map();
+
+      //Adding tooltip
+      const div = d3.select("#choropleth-map")
+        .append("div")
+        .attr('class', 'tooltip')
+        .style('opacity', 0);
+
+      var thresholds = [6, 13, 19]
+
+      var colorScale = d3.scaleThreshold()
+        .domain(thresholds)
+        .range(d3.schemeGreens[4]);
+
+      const csvPromise = d3.csv("tcl.csv");
+      const jsonPromise = d3.json("https://raw.githubusercontent.com/codeforamerica/click_that_hood/master/public/data/brazil-states.geojson");
+
+      Promise.all([csvPromise, jsonPromise])
+        .then(([data, topo]) => {
+
+          for (let i = 0; i < topo.features.length; i++) {
+            const topoProp = topo.features[i].properties;
+
+            for (let j = 0; j < data.length; j++) {
+
+              //Find where state in geoJson matches state in Csv
+
+              if (topoProp.name === data[j].state) {
+
+                //Add a new percentage property to the topo data by copying % from csv data.
+
+                topoProp.percentage = data[j].percentage;
+              }
+            }
+          }
+
+          brazilMap.append("g")
+            .selectAll("path")
+            .data(topo.features)
+            .enter()
+            .append("path")
+
+            //Draw each country
+            .attr("d", d3.geoPath()
+              .projection(projection)
+            )
+
+            //Set color of each country
+            .attr("fill", function(d) {
+              const state = d.properties.name;
+              const stateData = data.filter(row => row.state === state);
+              const percent = stateData[0]["percentage"];
+              return colorScale(percent);
+            })
+
+            //Adding hover effect
+            .on('mouseover', function(d) {
+              d3.select(d.properties.name)
+                .transition()
+                .duration('200')
+                .attr('opacity', '.5')
+              d3.select(this)
+                .transition()
+                .duration(200)
+                .style("opacity", 1)
+                .style("stroke", "black");
+
+            })
+            .on('mouseout', function(d) {
+              d3.selectAll(d.properties.name)
+                .transition()
+                .duration('200')
+                .attr('opacity', '.8')
+              d3.select(this)
+                .transition()
+                .duration(200)
+                .style("stroke", "transparent")
+            })
+
+            //Adding the tooltip
+            .style('cursor', 'crosshair')
+            .on('mouseover', d => {
+              const state = d.properties.name;
+              div
+                .transition()
+                .duration(200)
+                .style('opacity', 0.9);
+              div
+                .html(state + ": " + d.properties.percentage + "%")
+                .style('left', d3.event.pageX + 'px')
+                .style('top', d3.event.pageY - 28 + 'px');
+            })
+            .on('mouseout', () => {
+              div
+                .transition()
+                .duration(500)
+                .style('opacity', 0);
+            });
+        });
+
+      //Legend function for choropleth map
+      function makeLegend() {
+
+        const yScale = d3.scaleBand()
+          .domain(colorScale.range())
+          .range([height / 2, 3])
+          .paddingOuter(1);
+
+        const legend = brazilMap.append("g")
+          .attr("class", "legend")
+          .attr("transform", "translate(" + width - 40 + ",0)")
+
+        legend.selectAll("rect")
+          .data(colorScale.range())
+          .enter()
+          .append("rect")
+          .attr("x", 500)
+          .attr("y", d => yScale(d))
+          .attr("width", 10)
+          .attr("height", yScale.bandwidth())
+          .style("fill", d => d);
+
+        legend.append("text")
+          .attr("x", 515)
+          .attr("y", (height / 2) - yScale.bandwidth())
+          .text("0%");
+
+        legend.append("text")
+          .attr("x", 515)
+          .attr("y", (yScale.bandwidth() + 41))
+          .text("19%");
+
+        legend.append("text")
+          .attr("x", 515)
+          .attr("y", (yScale.bandwidth() + 82))
+          .text("13%");
+
+        legend.append("text")
+          .attr("x", 515)
+          .attr("y", (yScale.bandwidth() + 123))
+          .text("6%");
+
+        legend.append("text")
+          .attr("x", 515)
+          .attr("y", yScale.bandwidth())
+          .text("22%+");
+      }
+
+      makeLegend()
+
+      // Grouped Bar Chart
+      var GroupBar = d3.select("#bar-chart")
+        .append("svg")
+        .attr("width", 1150)
+        .attr("height", 400)
+        .attr("viewBox", "20 -5 1000 458")
+      var margin = {
+        top: 5,
+        right: 5,
+        bottom: 0,
+        left: 25
+      };
+      var width = +GroupBar.attr("width");
+      var height = +GroupBar.attr("height");
+      var g = GroupBar.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+      var x0 = d3.scaleBand()
+        .rangeRound([0, width], .1);
+      var x1 = d3.scaleBand()
+        .padding(0.20);
+
+      var y = d3.scaleLinear()
+        .rangeRound([height, 0]);
+
+      var color = d3.scaleOrdinal()
+        .range(["#1E5631", "#728c69", "#477998"]);
+
+      var tooltip = d3.select("#bar-chart")
+        .append('div')
+        .attr('class', 'tooltip')
+        .style('opacity', 0);
+
+      d3.csv("group.csv").then
+
+      (function(data) {
+        var states = d3.keys(data[0]).filter(function(key) {
+          return key !== "Year";
+        });
+        data.forEach(function(d) {
+          d.state = states.map(function(name) {
+            return {
+              name: name,
+              value: +d[name]
+            };
+          });
+        });
+        var keys = data.columns.slice(1);
+
+        console.log('keys');
+        console.log(keys);
+        x0.domain(data.map(function(d) {
+          return d.Year;
+        }));
+        x1.domain(keys).rangeRound([0, x0.bandwidth()]);
+        y.domain([0, d3.max(data, function(d) {
+          return d3.max(d.state, function(d) {
+            return d.value;
+          });
+        })]).nice();
+
+        g.append("g")
+          .selectAll("g")
+          .data(data)
+          .enter().append("g")
+          .attr("class", "bar")
+          .attr("transform", function(d) {
+            return "translate(" + x0(d.Year) + ",0)";
+          })
+          .selectAll("rect")
+          .data(function(d) {
+            return keys.map(function(key) {
+              return {
+                key: key,
+                value: d[key]
+              };
+            });
+          })
+          .enter().append("rect")
+          .attr("x", function(d) {
+            return x1(d.key);
+          })
+          .attr("y", function(d) {
+            return y(d.value);
+          })
+          .attr("width", x1.bandwidth())
+          .attr("height", function(d) {
+            return height - y(d.value);
+          })
+          .attr("fill", function(d) {
+            return color(d.key)
+          })
+
+          .on("mouseover", (d) => {
+            tooltip.transition().duration(300).style('opacity', 1);
+            tooltip.html(`TCL: <span>${d.value} Kilohectares </span>`).style('left', d3.event.pageX + 'px')
+              .style('top', d3.event.pageY - 28 + 'px');
+          })
+
+          .on("mouseout", () =>
+            tooltip.transition().duration(500).style('opacity', 0));
+
+        // Add AXES
+        g.append("g")
+          .attr("class", "axis")
+          .attr("transform", "translate(0," + height + ")")
+          .call(d3.axisBottom(x0));
+
+        g.append("text")
+          .attr("transform",
+            "translate(" + (width / 2) + " ," +
+            (height + margin.top + 10) + ")")
+          .style("text-anchor", "middle")
+          .text("Year");
+
+        g.append("g")
+          .attr("class", "y axis")
+          .call(d3.axisLeft(y))
+          .append("text")
+          .attr("x", 5)
+          .attr("y", y(y.ticks().pop()) + 1)
+          .attr("dy", "0.50em")
+          .attr("fill", "#000")
+          .attr("font-weight", "bold")
+          .attr("text-anchor", "start")
+          .text("Tree Cover Loss (KHA)");
+
+        var legend = g.append("g")
+          .attr("font-family", "sans-serif")
+          .attr("font-size", 12)
+          .attr("text-anchor", "end")
+          .selectAll("g")
+          .data(keys.slice().reverse())
+          .enter().append("g")
+          .attr("transform", function(d, i) {
+            return "translate(0," + i * 30 + ")";
+          });
+
+        legend.append("rect")
+          .attr("x", width + 255)
+          .attr("width", 18)
+          .attr("height", 18)
+          .attr("fill", color)
+          .attr("stroke", color)
+          .attr("stroke-width", 2)
+          .on("click", function(d) {
+            update(d)
+          });
+
+        legend.append("text")
+          .attr("x", width + 250)
+          .attr("y", 10)
+          .attr("dy", "0.32em")
+          .text(function(d) {
+            return d;
+          });
+      });
+
+      //Dual Axis Line Chart
+      // set dimensions and margins of the graph
+
+      var DualLine = d3.select("#line-chart")
+        .append("svg")
+        .attr("width", 900)
+        .attr("height", 400)
+        .attr("viewBox", "0 -10 900 460");
+
+      var parseTime = d3.timeParse("%Y");
+      var margin = {
+          top: 20,
+          right: 40,
+          bottom: 30,
+          left: 50
+        },
+        width = 960 - margin.left - margin.right,
+        height = 450 - margin.top - margin.bottom;
+
+      // set x and y range
+      var x = d3.scaleTime().rangeRound([0, width]);
+      var y1 = d3.scaleLinear().range([height, 0]);
+      var y2 = d3.scaleLinear().range([height, 0]);
+
+      // define line1
+      var vline1 = d3.line()
+        .x(function(d) {
+          return x(d.Year);
+        })
+        .y(function(d) {
+          return y1(d.TCL);
+        });
+
+      // define line2
+      var vline2 = d3.line()
+        .x(function(d) {
+          return x(d.Year);
+        })
+        .y(function(d) {
+          return y2(d.CO2);
+        });
+
+      // Parse data
+      d3.csv("dual_line.csv").then(function(data) {
+
+        // format the data
+        data.forEach(function(d) {
+          d.Year = parseTime(+d.Year);
+          d.TCL = +d.TCL;
+          d.CO2 = +d.CO2;
+        });
+
+        // Scale the range of the data
+        x.domain(d3.extent(data, function(d) {
+          return d.Year;
+        }));
+        y1.domain([0, d3.max(data, function(d) {
+          return Math.max(d.TCL);
+        })]);
+        y2.domain([0, d3.max(data, function(d) {
+          return Math.max(d.CO2);
+        })]);
+
+        // Add the line path 1.
+        DualLine.append("path")
+          .data([data])
+          .attr("class", "line")
+          .attr("fill", "none")
+          .style("stroke", "#728c69")
+          .attr("d", vline1);
+
+        // Add the line path 2.
+        DualLine.append("path")
+          .data([data])
+          .attr("class", "line")
+          .attr("fill", "none")
+          .style("stroke", "#477998")
+          .attr("d", vline2);
+
+        // Add the X Axis
+        DualLine.append("g")
+          .attr("transform", "translate(0," + height + ")")
+          .call(d3.axisBottom(x));
+
+        DualLine.append("text")
+          .attr("transform",
+            "translate(" + (width / 2) + " ," +
+            (height + margin.top + 10) + ")")
+          .style("text-anchor", "bottom")
+          .style("font-weight", "bold")
+          .text("Year");
+
+        // Add the Y1 Axis
+        DualLine.append("g")
+          .attr("class", "axisGreen")
+          .call(d3.axisLeft(y1))
+          // Add Axis Label
+          .append("text")
+          .attr("transform", "rotate(-90)")
+          .attr("y", 0 - margin.left)
+          .attr("x", 0 - (height / 2))
+          .attr("dy", "1em")
+          .style("text-anchor", "middle")
+          .text("TCL in MHA (Million Hectare Acres)");
+
+        // Add the Y2 Axis
+        DualLine.append("g")
+          .attr("class", "axisDarkgreen")
+          .attr("transform", "translate( " + width + ", 0 )")
+          .call(d3.axisRight(y2));
+
+        DualLine.append("g")
+          .attr("class", "axisDarkgreen")
+          .attr("transform", "translate( " + width + ", 0 )")
+          .call(d3.axisRight(y2))
+          .append("text")
+          .attr("transform", "rotate(-90)")
+          .attr("y", 30)
+          .attr("x", 0 - (height / 2))
+          .attr("dy", "1em")
+          .style("text-anchor", "middle")
+          .text("CO2 Emmissions (Gt.)");
+      });
+
+    };
+  </script>
 
 </head>
 
 <body>
 
-	<header>
+  <header>
 
-		<h1><b>Tree Cover Loss in Brazil: A Comprehensive Visualization.</b></h1>
+    <h1><b>Tree Cover Loss in Brazil: A Comprehensive Visualization.</b></h1>
 
-		<h1><a href="https://blog.globalforestwatch.org/data-and-research/when-a-tree-falls-is-it-deforestation">When a tree falls, is it deforestation?</a></h1>
+    <h1><a href="https://blog.globalforestwatch.org/data-and-research/when-a-tree-falls-is-it-deforestation">When a tree falls, is it deforestation?</a></h1>
 
-	</header>
+  </header>
 
-	<top>
+  <top>
 
-		<figure id="choropleth-map">
-			<h1>Percentage of Tree Cover Loss in Brazil's States.</h1>
-			<h3>This chart maps the aggregate percentage of tree cover loss (TCL) in each of Brazil’s states between 2001 and 2018. Greater percentages of TCL is marked by darker shades of green. Hover over each state to see the individual amount of percentage lost for that area.</h3>
-		</figure>
+    <figure id="choropleth-map">
+      <h1>
+        Percentage of Tree Cover Loss in Brazil's States.
+      </h1>
+      <h3>This chart maps the aggregate percentage of tree cover loss (TCL) in each of Brazil’s states between 2001 and 2018. Greater percentages of TCL is marked by darker shades of green. Hover over each state to see the individual amount of percentage lost for that area.</h3>
+    </figure>
 
-		<section>
-			<h3>
-				<p>Deforestation has become, no doubt, one of the leading topics concerning climate change and global sustainability, as its impact can be seen world wide leading to biodiversity loss and political turmoil.</p>
-				<p>Forests make up <b>31%</b> of the total land area on our planet and provide a vast amount of resources needed to sustain both human and animal life. This is especially concerning in tropical rainforests, such as in Brazil, as the consequences of deforestation are vast and surmounting. <p>However, what do we mean by deforestation and what does it look like in Brazil? On this page, we’ve set out to answer these questions with a set of interactive visualizations to understand what tree cover loss looks like in Brazil.</p>
-					<p>
-					</p><i>Please explore and read the following charts to find out more.</i>
-			</h3>
-		</section>
+    <section>
+      <h3>
+        <p>Deforestation has become, no doubt, one of the leading topics concerning climate change and global sustainability, as its impact can be seen world wide leading to biodiversity loss and political turmoil.</p>
+        <p>Forests make up <b>31%</b> of the total land area on our planet and provide a vast amount of resources needed to sustain both human and animal life. This is especially concerning in tropical rainforests, such as in Brazil, as the consequences of deforestation are vast and surmounting. <p>However, what do we mean by deforestation and what does it look like in Brazil? On this page, we’ve set out to answer these questions with a set of interactive visualizations to understand what tree cover loss looks like in Brazil.</p>
+          <p>
+          </p><i>Please explore and read the following charts to find out more.</i>
+      </h3>
+    </section>
 
-	</top>
+  </top>
 
-	<middle>
+  <middle>
 
-		<div>
-			<h1>Brazil's Top 3 States with Highest Tree Cover Loss from 2008 to 2018.</h1>
-			<h3>Here, you'll notice the top three states of Brazil, <i>Mato Grosso, Rondonia, and Maranhao</i>, that have experienced a record high of tree cover loss within the last decade. Notice the trend as time progresses by hovering over each bar.</h3>
-			<h4> **<i>Mato Grosso</i> has, not only, the highest amount of TCL in Brazil, but also one of the highest rates across the globe. One of Mato Grosso's regions, Vera, has had a record loss of 44% of its total Tree Cover in comparison to a global loss of 19%.</h4>
-			<figure id="bar-chart"></figure>
-		</div>
+    <div>
+      <h1>Brazil's Top 3 States with Highest Tree Cover Loss from 2008 to 2018.</h1>
+      <h3>Here, you'll notice the top three states of Brazil, <i>Mato Grosso, Rondonia, and Maranhao</i>, that have experienced a record high of tree cover loss within the last decade. Notice the trend as time progresses by hovering over each bar.</h3>
+      <h4> **<i>Mato Grosso</i> has, not only, the highest amount of TCL in Brazil, but also one of the highest rates across the globe. One of Mato Grosso's regions, Vera, has had a record loss of 44% of its total Tree Cover in comparison to a global loss of 19%.</h4>
+      <figure id="bar-chart"></figure>
+    </div>
 
-	</middle>
+  </middle>
 
-	<third>
-		<section>
-			<h1>So what does Tree Cover Loss <i>look</i> like?</h1>
-			<h3>Deforestation refers to the <a href="https://youmatter.world/en/definition/definitions-what-is-definition-deforestation-causes-effects"> "decrease in forest areas across the world that are lost for other uses.”</a>This definition excludes the differences between permanent deforestation and recoverable tree loss. We have to consider all forms of tree cover loss as important, whether permanent or not, as they translate differently to policymakers and conservation efforts. This is especially true for Brazil, where tree cover loss looks much different than the rest of the world. <p>Commodity driven deforestation makes up a total of 64% of total loss in Brazil, compared to the only 27% across the globe. Commodity driven tree cover loss represents a permanent conversion of forest for global sourcing of products such as oil and beef. The dominating size of this driver, represented by the symbol to the right, indicates a dire need to move towards a more sustainable sourcing of global goods that does not permanently convert forests, especially concerning the Amazon Rainforest. </p>
-			</h3>
-		</section>
-		<symbol>
-			<h1>Tree Cover Loss by Driving Factor.</h1>
-			<h3>The following symbols represent the amount of Mha (million hectare acres) of land that was lost for that specific reason. The size of the symbol correlates to the amount lost. </h3>
-			<figure id="symbol-chart"></figure>
-			<h4>*Includes tree cover loss driven by Wildfire, Urbanization, and other unknown causes.</h4>
-		</symbol>
-	</third>
+  <third>
+    <section>
+      <h1>So what does Tree Cover Loss <i>look</i> like?</h1>
+      <h3>Deforestation refers to the <a href="https://youmatter.world/en/definition/definitions-what-is-definition-deforestation-causes-effects"> "decrease in forest areas across the world that are lost for other uses.”</a> This definition excludes the differences between permanent deforestation and recoverable tree loss. We have to consider all forms of tree cover loss as important, whether permanent or not, as they translate differently to policymakers and conservation efforts. This is especially true for Brazil, where tree cover loss looks much different than the rest of the world. <p>Commodity driven deforestation makes up a total of 64% of total loss in Brazil, compared to the only 27% across the globe. Commodity driven tree cover loss represents a permanent conversion of forest for global sourcing of products such as oil and beef. The dominating size of this driver, shown in the chart to the right, indicates a dire need to move towards a more sustainable sourcing of global goods that does not permanently convert forests, especially concerning the Amazon Rainforest. </p>
+      </h3>
+    </section>
+    <pie>
+
+      <h1>
+        <center>Tree Cover Loss by Driving Factor.</center>
+      </h1>
+
+      <svg width="760" height="400"></svg>
+      <script src="https://d3js.org/d3.v5.min.js"></script>
+      <script>
+        var Piesvg = d3.select("svg"),
+          width = +Piesvg.attr("width"),
+          height = +Piesvg.attr("height"),
+          radius = Math.min(width, height) / 2,
+          g = Piesvg.append("g").attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+        var color = d3.scaleOrdinal(["#497d9c", "#6396b6", "#85adc6", "#a8c5d6"]);
+
+        var pie = d3.pie()
+          .sort(null)
+          .value(function(d) {
+            return d.mha;
+          });
+
+        var Piepath = d3.arc()
+          .outerRadius(radius - 10)
+          .innerRadius(radius - 100);
+
+        var label = d3.arc()
+          .outerRadius(radius - 40)
+          .innerRadius(radius - 40);
+
+        d3.csv("driver.csv").then(function(data) {
+
+          data.forEach(function(d) {
+            d.mha = +d.mha;
+            return d;
+          });
+
+          var arc = g.selectAll(".arc")
+            .data(pie(data))
+            .enter().append("g")
+            .attr("class", "arc");
+
+          arc.append("path")
+            .attr("d", Piepath)
+            .attr("fill", function(d) {
+              return color(d.data.driver);
+            })
+
+            //Tooltip
+            .on('mouseover', d => {
+              const driver = d.data.driver;
+              tooltip
+                .transition()
+                .duration(200)
+                .style('opacity', 0.9);
+              tooltip
+                .html(d.data.mha + " Mha")
+                .style('left', d3.event.pageX + 'px')
+                .style('top', d3.event.pageY - 28 + 'px');
+            })
+            .on('mouseout', () => {
+              div
+                .transition()
+                .duration(500)
+                .style('opacity', 0);
+            })
+
+            //Hover
+            .on('mouseover', function(d) {
+              d3.select(d.data.driver)
+                .transition()
+                .duration('200')
+                .attr('opacity', '0.1')
+              d3.select(this)
+                .transition()
+                .duration(200)
+                .style("opacity", 1)
+                .style("stroke", "black");
+
+            })
+            .on('mouseout', function(d) {
+              d3.selectAll(d.data.driver)
+                .transition()
+                .duration('200')
+                .attr('opacity', '.8')
+              d3.select(this)
+                .transition()
+                .duration(200)
+                .style("stroke", "transparent")
+            });
+
+          arc.append("text")
+            .attr("transform", function(d) {
+              return "translate(" + label.centroid(d) + ")";
+            })
+            .attr("dy", "0.35em")
+            .text(function(d) {
+              return (d.data.driver)
+            });
+        });
+      </script>
+      <h4>*Others include TCL by Wildire, Urbanization, and other unknown causes.</h4>
+    </pie>
+  </third>
+
+  <h1>Tree Cover Loss per Year with Carbon Dioxide Emissions.</h1>
+  <bottom>
 
 
-	<bottom>
-		<section>
-			<figure id="pie-chart"></figure>
-		</section>
 
-		<h1>Tree Cover Loss per Year with Carbon Dioxide Emissions.</h1>
-		<h3>The loss of tree cover has an underestimated impact on the amount of CO<sup>2</sup> it adds into the air every year. As we can see, the amount of CO<sup>2</sup> emissions in Brazil follows the amount of tree cover loss. This causal relationship unveils a deeper importance of tree cover loss and deforestation than most know or would like to think about, specifically concerning climate change efforts. </h3>
-		<figure id="line-chart"></figure>
-		<h3>
-			<p>Seeing a massive spike in 2016 with a high of 5.38 Million Hectare Acres of TCL and 1.94 giggatones (Gt.) of CO<sup>2</sup> dispersed into the atmosphere, we only grow more and more anxious about what the future holds for these heavily impacted areas. This relationship alone indicates a dire need to move towards sustainability and accountability mechanisms for areas with high levels of deforestation.</p>
-			<p>Thank you for taking the time to read through our visualizations. We hope you have learned more about deforestation, what it looks like, and what impacts it has. </p>
-		</h3>
+    <left>
 
+      <h3>The loss of tree cover has an underestimated impact on the amount of CO<sup>2</sup> it adds into the air every year. As we can see, the amount of CO<sup>2</sup> emissions in Brazil follows the amount of tree cover loss. This causal relationship unveils a deeper importance of tree cover loss and deforestation than most know or would like to think about, specifically concerning climate change efforts. </h3>
 
+      <figure id="line-chart"></figure>
+    </left>
+    <right>
 
-	</bottom>
+      <h3>
+        <p>Seeing a massive spike in 2016 with a high of 5.38 Million Hectare Acres of TCL and 1.94 giggatones (Gt.) of CO<sup>2</sup> dispersed into the atmosphere, we only grow more and more anxious about what the future holds for these heavily impacted areas. This relationship alone indicates a dire need to move towards sustainability and accountability mechanisms for areas with high levels of deforestation.</p>
 
-	<footer>
-		<h3>Sources and Code References</h3>
-		<li><a href="https://www.globalforestwatch.org/dashboards/country/BRA?category=summary&dashboardPrompts=eyJvcGVuIjpmYWxzZSwic3RlcEluZGV4IjowLCJzdGVwc0tleSI6InNoYXJlV2lkZ2V0IiwiZm9yY2UiOnRydWV9&map=eyJkYXRhc2V0cyI6W3siZGF0YXNldCI6IjBiMDIwOGI2LWI0MjQtNGI1Ny05ODRmLWNhZGRmYTI1YmEyMiIsImxheWVycyI6WyJjYzM1NDMyZC0zOGQ3LTRhMDMtODcyZS0zYTcxYTJmNTU1ZmMiLCJiNDUzNTBlMy01YTc2LTQ0Y2QtYjBhOS01MDM4YTBkOGJmYWUiXSwiYm91bmRhcnkiOnRydWUsIm9wYWNpdHkiOjEsInZpc2liaWxpdHkiOnRydWV9LHsiZGF0YXNldCI6ImVhYjk2NTVmLWRkMzctNGJiMy1iMjIzLTRjNWRmMTY2NTY0YyIsImxheWVycyI6WyJkY2U4MDA0Zi00ZDBmLTRjMmQtYWU0Yi1kY2Y1NWUxNDAzNWYiXSwib3BhY2l0eSI6MSwidmlzaWJpbGl0eSI6dHJ1ZSwicGFyYW1zIjp7InRocmVzaCI6MzAsInZpc2liaWxpdHkiOnRydWV9fV0sImNlbnRlciI6eyJsYXQiOi0xNS4xMjgzMDA2MDg5NDA5OCwibG5nIjotNTQuMzkxMzAwMDAwMDE4ODh9LCJiZWFyaW5nIjowLCJwaXRjaCI6MCwiem9vbSI6Mi44Mjg1NDU3NDMwMTI0Mzg4LCJjYW5Cb3VuZCI6ZmFsc2UsImJib3giOltdfQ%3D%3D&treeLoss=eyJpbnRlcmFjdGlvbiI6e319&treeLossTsc=eyJpbnRlcmFjdGlvbiI6e30sImhpZ2hsaWdodGVkIjpmYWxzZX0%3D">Global Forest Watch: Brazil Dashboard </a></li>
-		<li><a href="https://www.worldwildlife.org/threats/deforestation-and-forest-degradation">World Wildlife Fund: Forest Degradation </a></li>
-		<li> <a href="https://www.reuters.com/article/us-global-forests-emissions-trfn/carbon-emissions-from-tropical-forest-loss-underestimated-scientists-say-idUSKBN1XA1CB">Reuters: Global Forest Emissions </a>
-		</li>
-		<li> <a href="https://www.d3-graph-gallery.com/choropleth">D3 Graph Gallery </a>
-		</li>
+      </h3>
+    </right>
+  </bottom>
 
+  <h3>
+    <center>Thank you for taking the time to read through our visualizations. We hope you have learned more about deforestation, what it looks like, and what impacts it has. </center>
+  </h3>
 
+  <footer>
+    <h3>Sources and Code References</h3>
+    <li><a href="https://www.globalforestwatch.org/dashboards/country/BRA?category=summary&dashboardPrompts=eyJvcGVuIjpmYWxzZSwic3RlcEluZGV4IjowLCJzdGVwc0tleSI6InNoYXJlV2lkZ2V0IiwiZm9yY2UiOnRydWV9&map=eyJkYXRhc2V0cyI6W3siZGF0YXNldCI6IjBiMDIwOGI2LWI0MjQtNGI1Ny05ODRmLWNhZGRmYTI1YmEyMiIsImxheWVycyI6WyJjYzM1NDMyZC0zOGQ3LTRhMDMtODcyZS0zYTcxYTJmNTU1ZmMiLCJiNDUzNTBlMy01YTc2LTQ0Y2QtYjBhOS01MDM4YTBkOGJmYWUiXSwiYm91bmRhcnkiOnRydWUsIm9wYWNpdHkiOjEsInZpc2liaWxpdHkiOnRydWV9LHsiZGF0YXNldCI6ImVhYjk2NTVmLWRkMzctNGJiMy1iMjIzLTRjNWRmMTY2NTY0YyIsImxheWVycyI6WyJkY2U4MDA0Zi00ZDBmLTRjMmQtYWU0Yi1kY2Y1NWUxNDAzNWYiXSwib3BhY2l0eSI6MSwidmlzaWJpbGl0eSI6dHJ1ZSwicGFyYW1zIjp7InRocmVzaCI6MzAsInZpc2liaWxpdHkiOnRydWV9fV0sImNlbnRlciI6eyJsYXQiOi0xNS4xMjgzMDA2MDg5NDA5OCwibG5nIjotNTQuMzkxMzAwMDAwMDE4ODh9LCJiZWFyaW5nIjowLCJwaXRjaCI6MCwiem9vbSI6Mi44Mjg1NDU3NDMwMTI0Mzg4LCJjYW5Cb3VuZCI6ZmFsc2UsImJib3giOltdfQ%3D%3D&treeLoss=eyJpbnRlcmFjdGlvbiI6e319&treeLossTsc=eyJpbnRlcmFjdGlvbiI6e30sImhpZ2hsaWdodGVkIjpmYWxzZX0%3D">Global Forest Watch: Brazil Dashboard </a></li>
+    <li><a href="https://www.worldwildlife.org/threats/deforestation-and-forest-degradation">World Wildlife Fund: Forest Degradation </a></li>
+    <li> <a href="https://www.reuters.com/article/us-global-forests-emissions-trfn/carbon-emissions-from-tropical-forest-loss-underestimated-scientists-say-idUSKBN1XA1CB">Reuters: Global Forest Emissions </a>
+    </li>
+    <li> <a href="https://www.d3-graph-gallery.com/choropleth">D3 Graph Gallery </a>
+    </li>
 
-	</footer>
+  </footer>
 
-</body>
-
-</html>
+</body></html>

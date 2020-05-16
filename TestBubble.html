@@ -1,68 +1,68 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <style>
-	.arc text {
-		font: 15px sans-serif;
-		text-anchor: middle;
-	}
+  .arc text {
+    font: 15px sans-serif;
+    text-anchor: middle;
+  }
 
-	.arc path {
-		stroke: #fff;
-	}
+  .arc path {
+    stroke: #fff;
+  }
 
 </style>
 <svg width="860" height="400"></svg>
 <script src="https://d3js.org/d3.v5.min.js"></script>
 <script>
-	var Piesvg = d3.select("svg"),
-		width = +Piesvg.attr("width"),
-		height = +Piesvg.attr("height"),
-		radius = Math.min(width, height) / 2,
-		g = Piesvg.append("g").attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+  var Piesvg = d3.select("svg"),
+    width = +Piesvg.attr("width"),
+    height = +Piesvg.attr("height"),
+    radius = Math.min(width, height) / 2,
+    g = Piesvg.append("g").attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
-	var color = d3.scaleOrdinal(["#98abc5", "#8a89a6", "#7b6888", "#6b486b"]);
+  var color = d3.scaleOrdinal(["#98abc5", "#8a89a6", "#7b6888", "#6b486b"]);
 
-	var pie = d3.pie()
-		.sort(null)
-		.value(function(d) {
-			return d.mha;
-		});
+  var pie = d3.pie()
+    .sort(null)
+    .value(function(d) {
+      return d.mha;
+    });
 
-	var Piepath = d3.arc()
-		.outerRadius(radius - 10)
-		.innerRadius(radius - 100);
+  var Piepath = d3.arc()
+    .outerRadius(radius - 10)
+    .innerRadius(radius - 100);
 
-	var label = d3.arc()
-		.outerRadius(radius - 40)
-		.innerRadius(radius - 40);
+  var label = d3.arc()
+    .outerRadius(radius - 40)
+    .innerRadius(radius - 40);
 
-	d3.csv("driver.csv").then(function(data) {
+  d3.csv("driver.csv").then(function(data) {
 
-		data.forEach(function(d) {
-			d.mha = +d.mha;
-			return d;
-		});
+    data.forEach(function(d) {
+      d.mha = +d.mha;
+      return d;
+    });
 
-		var arc = g.selectAll(".arc")
-			.data(pie(data))
-			.enter().append("g")
-			.attr("class", "arc");
+    var arc = g.selectAll(".arc")
+      .data(pie(data))
+      .enter().append("g")
+      .attr("class", "arc");
 
-		arc.append("path")
-			.attr("d", Piepath)
-			.attr("fill", function(d) {
-				return color(d.data.driver);
-			});
+    arc.append("path")
+      .attr("d", Piepath)
+      .attr("fill", function(d) {
+        return color(d.data.driver);
+      });
 
-		arc.append("text")
-			.attr("transform", function(d) {
-				return "translate(" + label.centroid(d) + ")";
-			})
-			.attr("dy", "0.35em")
-			.text(function(d) {
-				return d.data.driver;
-			});
-	});
+    arc.append("text")
+      .attr("transform", function(d) {
+        return "translate(" + label.centroid(d) + ")";
+      })
+      .attr("dy", "0.35em")
+      .text(function(d) {
+        return d.data.driver;
+      });
+  });
 
 </script>
 

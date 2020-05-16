@@ -4,8 +4,8 @@
 
 html {
   font-size: 100%;
-  font-family: "Jost", sans-serif;
-  background-color: ghostwhite;
+  font-family: "Garamond", serif;
+  background-color: #D3E1D0;
   overflow-y: scroll
 }
 
@@ -119,10 +119,12 @@ path.line {
 
 .axisGreen text {
   fill: #728c69;
+	font-weight: bold;
   font-size: small;
 }
 
 .axisDarkgreen text {
   fill: #477998;
+	font-weight: bold;
   font-size: small;
 }

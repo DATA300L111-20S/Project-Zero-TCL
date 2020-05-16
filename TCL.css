@@ -71,7 +71,7 @@ div.tooltip {
   color: white;
   position: absolute;
   text-align: center;
-  width: 110px;
+  width: 115px;
   height: 65px;
   padding: 2px;
   font: 12 px sans-serif;
@@ -116,10 +116,6 @@ span {
 
 .arc path {
   stroke: #fff;
-}
-
-pie path: hover {
-  fill: #bfe6ff;
 }
 
 path.line {
